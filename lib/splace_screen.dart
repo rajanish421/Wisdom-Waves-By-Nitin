@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
-import 'package:wisdom_waves_by_nitin/home_screen.dart';
+import 'package:wisdom_waves_by_nitin/features/publics/screens/home_screen.dart';
 import 'dart:async';
 
 import 'onBoarding/onBoarding_screen.dart';

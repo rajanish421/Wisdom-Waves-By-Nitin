@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:wisdom_waves_by_nitin/constant/app_colors.dart';
-import 'package:wisdom_waves_by_nitin/home_screen.dart';
+import 'package:wisdom_waves_by_nitin/features/publics/screens/home_screen.dart';
 import 'onBoarding_widget.dart';
 
 class OnboardingScreen extends StatefulWidget {

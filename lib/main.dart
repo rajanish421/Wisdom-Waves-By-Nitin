@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:wisdom_waves_by_nitin/comman/widgets/bottom_nav_bar.dart';
 import 'package:wisdom_waves_by_nitin/constant/app_theme.dart';
+import 'package:wisdom_waves_by_nitin/features/publics/screens/home_screen.dart';
 import 'package:wisdom_waves_by_nitin/splace_screen.dart';
 void main() {
   runApp(const MyApp());
@@ -14,7 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Wisdom Waves by Nitin',
       theme:AppThemes.lightTheme,
-      home: SplashScreen(),
+      home: BottomNavBar(),
     );
   }
 }

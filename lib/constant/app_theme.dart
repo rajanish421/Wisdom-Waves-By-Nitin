@@ -7,6 +7,7 @@ class AppThemes {
   // light theme
 
   static final ThemeData lightTheme = ThemeData(
+    fontFamily: 'Inter',
     useMaterial3: true,
     brightness: Brightness.light,
     primaryColor: AppColors.appBarColor,
@@ -22,7 +23,7 @@ class AppThemes {
     ),
     textTheme: TextTheme(
       bodyLarge: TextStyle(fontSize: 16, color: AppColors.textPrimaryColor),
-      bodyMedium: TextStyle(fontSize: 14, color: AppColors.textSecondaryColor),
+      bodyMedium: TextStyle(fontSize: 14, color: AppColors.textSecondaryColor,fontFamily: 'Inter'),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(

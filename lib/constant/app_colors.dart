@@ -42,8 +42,8 @@ class AppColors {
   static const Color cardBackgroundColor = Color(0xFFFFFFFF); // Clean White for Cards
 
   // Text
-  static const Color textPrimaryColor = Color(0xFF0D47A1); // Deep Blue Text
-  static const Color textSecondaryColor = Color(0xFF607D8B); // Blue-Grey for Subtext
+  static const Color textPrimaryColor = Color(0xFF000000); // Deep Blue Text
+  static const Color textSecondaryColor = Color(0xFF000000); // Blue-Grey for Subtext
   static const Color textNormalColor = Colors.black;
 
   // Bottom Navigation Bar

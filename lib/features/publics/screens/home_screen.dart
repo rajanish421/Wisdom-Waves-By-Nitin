@@ -1,0 +1,80 @@
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutter/material.dart';
+import 'package:wisdom_waves_by_nitin/Custom_Widget/button.dart';
+import 'package:wisdom_waves_by_nitin/constant/app_colors.dart';
+
+import '../widgets/topper_carousel.dart';
+import 'feature_screen.dart';
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: 10),
+              Text(
+                "Welcome To Wisdom Waves By Nitin Bhaiya",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 32, fontFamily: 'Lobster'),
+              ),
+              SizedBox(height: 10),
+              CustomButton(
+                text: "Login as a Student -> ",
+                onPressed: () {},
+                fontSize: 22,
+              ),
+              SizedBox(height: 10,),
+              Container(
+                width: double.infinity,
+                height: 120,
+                decoration: BoxDecoration(
+                  color: AppColors.cardBackgroundColor,
+                  border: Border.all(
+                    color: Colors.grey,
+                    width: 3,
+                  ),
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.widgets,size: 80,color: Colors.blue,),
+                    Spacer(),
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => FeatureScreen(),));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("Why Wisdom Waves",style: TextStyle(fontSize: 25,fontFamily: 'Titan',color: Colors.blue),),
+                            SizedBox(height: 5,),
+                            Text("Tap to see all features",style: TextStyle(fontSize: 18),),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(height: 10,),
+              TopperCarousel(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
