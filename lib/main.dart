@@ -16,7 +16,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Wisdom Waves by Nitin',
       theme:AppThemes.lightTheme,
-      home: BottomNavBar(),
+      // home: BottomNavBar(),
+      home: SplashScreen(),
     );
   }
 }

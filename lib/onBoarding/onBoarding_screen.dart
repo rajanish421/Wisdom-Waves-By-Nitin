@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:wisdom_waves_by_nitin/comman/widgets/bottom_nav_bar.dart';
 import 'package:wisdom_waves_by_nitin/constant/app_colors.dart';
 import 'package:wisdom_waves_by_nitin/features/publics/screens/home_screen.dart';
 import 'onBoarding_widget.dart';
@@ -73,7 +74,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         onPressed: () {
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (_) => const HomeScreen()),
+                            MaterialPageRoute(builder: (_) =>  HomeScreen()),
                           );
                         },
                         child: const Text("Skip"),
@@ -88,7 +89,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           if (isLastPage) {
                             Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (_) => const HomeScreen()),
+                              MaterialPageRoute(builder: (_) =>  BottomNavBar()),
                             );
                           } else {
                             _controller.nextPage(

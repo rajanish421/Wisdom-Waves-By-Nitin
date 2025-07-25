@@ -2,6 +2,8 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
 import '../../constant/app_colors.dart';
+import '../../features/comman/screens/about_us_screen.dart';
+import '../../features/publics/screens/contact_screen.dart';
 import '../../features/publics/screens/home_screen.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -17,9 +19,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
 
   List<Widget> pages = [
-    Center(child: Text("Contacts Us")),
+    ContactScreen(),
     HomeScreen(),
-    Center(child: Text("About US")),
+    AboutUsScreen(),
   ];
 
   void onTapped(int index) {
