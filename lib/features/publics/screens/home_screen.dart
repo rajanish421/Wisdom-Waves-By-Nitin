@@ -5,6 +5,7 @@ import 'package:wisdom_waves_by_nitin/Custom_Widget/button.dart';
 import 'package:wisdom_waves_by_nitin/constant/app_colors.dart';
 import 'package:wisdom_waves_by_nitin/features/publics/widgets/courses_card.dart';
 
+import '../../students/auth/screens/login_screen.dart';
 import '../widgets/announcement_cart.dart';
 import '../widgets/topper_carousel.dart';
 import 'feature_screen.dart';
@@ -66,33 +67,35 @@ class HomeScreen extends StatelessWidget {
               SizedBox(height: 10),
               CustomButton(
                 text: "Login as a Student -> ",
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
+                },
                 fontSize: 22,
               ),
               SizedBox(height: 10),
-              Container(
-                width: double.infinity,
-                height: 120,
-                decoration: BoxDecoration(
-                  color: AppColors.cardBackgroundColor,
-                  border: Border.all(color: Colors.grey, width: 3),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.widgets, size: 80, color: Colors.blue),
-                    Spacer(),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => FeatureScreen(),
-                          ),
-                        );
-                      },
-                      child: Padding(
+              GestureDetector(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FeatureScreen(),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: double.infinity,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    color: AppColors.cardBackgroundColor,
+                    border: Border.all(color: Colors.grey, width: 3),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.widgets, size: 80, color: Colors.blue),
+                      Spacer(),
+                      Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -113,8 +116,8 @@ class HomeScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               SizedBox(height: 10),
