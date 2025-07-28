@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wisdom_waves_by_nitin/Custom_Widget/button.dart';
 import 'package:wisdom_waves_by_nitin/constant/app_colors.dart';
+import 'package:wisdom_waves_by_nitin/features/students/students_bottom_nav_bar.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -92,9 +93,10 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             const SizedBox(height: 28),
-
             // Login Button with Gradient
-            CustomButton(text: "Login", onPressed: (){},),
+            CustomButton(text: "Login", onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => StudentsBottomNavBar(),));
+            },),
           ],
         ),
       ),
