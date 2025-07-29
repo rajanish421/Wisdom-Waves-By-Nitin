@@ -1,19 +1,10 @@
 // // ✅ 1. Import required packages
 // import 'dart:convert';
-// import 'package:club_app/comman/widgets/show_snack_bar.dart';
-// import 'package:club_app/constant/global_variable.dart';
-// import 'package:club_app/constant/http_error_handling.dart';
-// import 'package:club_app/models/quiz_attempts.dart';
-// import 'package:club_app/models/quiz_model.dart';
 // import 'package:flutter/cupertino.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter/src/widgets/framework.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:provider/provider.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
-//
-// import '../../../models/resutlModel.dart';
-// import '../../../providers/user_provider.dart';
+// import '../../../../Model/quiz_model.dart';
+// import '../../../../constant/global_variable.dart';
 // import '../screens/resuiltScreen.dart';
 //
 // class QuizServices {

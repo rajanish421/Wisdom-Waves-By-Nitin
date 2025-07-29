@@ -8,35 +8,28 @@ class FeatureCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(content: Text("Opening ${feature['title']}")),
-        // );
-      },
-      child: Container(
-        decoration: _featureCardDecoration(),
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              color: const Color(0xFF1976D2),
-              size: 100,
+    return Container(
+      decoration: _featureCardDecoration(),
+      padding: const EdgeInsets.all(14),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            color: const Color(0xFF1976D2),
+            size: 100,
+          ),
+          const SizedBox(height: 10),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                fontFamily: "Inter"
             ),
-            const SizedBox(height: 10),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: "Inter"
-              ),
-            )
-          ],
-        ),
+          )
+        ],
       ),
     );
   }

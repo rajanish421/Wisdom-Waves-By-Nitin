@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wisdom_waves_by_nitin/constant/app_colors.dart';
 import 'package:wisdom_waves_by_nitin/features/students/homescreen/widgets/feature_card.dart';
+import 'package:wisdom_waves_by_nitin/features/students/test/screens/main_screen.dart';
 
 class StudentHomeScreen extends StatelessWidget {
   const StudentHomeScreen({super.key});
@@ -35,7 +36,9 @@ class StudentHomeScreen extends StatelessWidget {
                 children: [
                   GestureDetector(
                     child: FeatureCard(icon: Icons.assignment, title: "Test"),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => MainScreen(),));
+                    },
                   ),
                   GestureDetector(
                     onTap: () {},
