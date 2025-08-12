@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:wisdom_waves_by_nitin/Custom_Widget/button.dart';
+import 'package:wisdom_waves_by_nitin/comman/widgets/show_snack_bar.dart';
 import 'package:wisdom_waves_by_nitin/constant/app_colors.dart';
+import 'package:wisdom_waves_by_nitin/features/students/auth/services/auth_services.dart';
+import 'package:wisdom_waves_by_nitin/features/students/homescreen/screens/students_home_screen.dart';
 import 'package:wisdom_waves_by_nitin/features/students/students_bottom_nav_bar.dart';
+
+// import '../../../../comman/widgets/show_snack_bar.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -12,7 +17,17 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _obscureText = true;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  AuthServices authServices = AuthServices();
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +68,10 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 32),
             // Username Field
             TextFormField(
+              controller: emailController,
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.person),
-                hintText: "Username",
+                hintText: "UserId",
                 filled: true,
                 fillColor: Colors.white,
                 contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -69,6 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
             // Password Field
             TextFormField(
+              controller: passwordController,
               obscureText: _obscureText,
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.lock),
@@ -94,8 +111,12 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 28),
             // Login Button with Gradient
-            CustomButton(text: "Login", onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => StudentsBottomNavBar(),));
+            CustomButton(text: "Login", onPressed: ()async{
+              // if(emailController.text.toString().trim().isEmpty && passwordController.text.toString().trim().isEmpty){
+              //   showCustomSnackBar(text: "Please enter data", context: context);
+              // }
+              // await authServices.login(emailController.text.toString(), passwordController.text.toString(), context);
+            Navigator.push(context, MaterialPageRoute(builder: (context) => StudentsBottomNavBar(),));
             },),
           ],
         ),

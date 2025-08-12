@@ -3,6 +3,8 @@ import 'package:wisdom_waves_by_nitin/constant/app_colors.dart';
 import 'package:wisdom_waves_by_nitin/features/students/homescreen/widgets/feature_card.dart';
 import 'package:wisdom_waves_by_nitin/features/students/test/screens/main_screen.dart';
 
+import '../../fee/screens/fee_screen.dart';
+
 class StudentHomeScreen extends StatelessWidget {
   const StudentHomeScreen({super.key});
 
@@ -41,7 +43,9 @@ class StudentHomeScreen extends StatelessWidget {
                     },
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => FeeScreen(),));
+                    },
                     child: FeatureCard(icon: Icons.attach_money, title: "Fees"),
                   ),
                   GestureDetector(

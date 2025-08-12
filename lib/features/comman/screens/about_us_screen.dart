@@ -13,9 +13,9 @@ class AboutUsScreen extends StatelessWidget {
     "assets/images/banner3.jpeg",
   ];
   final List<String> facultyList = [
-    "assets/images/banner1.jpeg",
-    "assets/images/banner2.jpeg",
-    "assets/images/banner3.jpeg",
+    "assets/images/teacher1.jpeg",
+    // "assets/images/banner2.jpeg",
+    // "assets/images/banner3.jpeg",
   ];
 
   @override
