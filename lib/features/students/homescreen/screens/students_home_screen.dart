@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wisdom_waves_by_nitin/Model/students_model.dart';
 import 'package:wisdom_waves_by_nitin/constant/app_colors.dart';
 import 'package:wisdom_waves_by_nitin/features/students/homescreen/widgets/feature_card.dart';
 import 'package:wisdom_waves_by_nitin/features/students/test/screens/main_screen.dart';
@@ -6,7 +7,8 @@ import 'package:wisdom_waves_by_nitin/features/students/test/screens/main_screen
 import '../../fee/screens/fee_screen.dart';
 
 class StudentHomeScreen extends StatelessWidget {
-  const StudentHomeScreen({super.key});
+  final Students student;
+  const StudentHomeScreen({super.key,required this.student});
 
   /// Feature items list
   List<Map<String, dynamic>> get _featureItems => [
@@ -22,6 +24,7 @@ class StudentHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(student);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: Padding(
@@ -44,7 +47,7 @@ class StudentHomeScreen extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => FeeScreen(),));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => FeeScreen(student: student,),));
                     },
                     child: FeatureCard(icon: Icons.attach_money, title: "Fees"),
                   ),

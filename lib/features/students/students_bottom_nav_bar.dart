@@ -1,12 +1,16 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:wisdom_waves_by_nitin/Model/students_model.dart';
+import 'package:wisdom_waves_by_nitin/features/students/auth/screens/login_screen.dart';
 import 'package:wisdom_waves_by_nitin/features/students/discussion/screens/discussion_screen.dart';
 import 'package:wisdom_waves_by_nitin/features/students/homescreen/screens/students_home_screen.dart';
 
 import '../../constant/app_colors.dart';
 import '../comman/screens/about_us_screen.dart';
 class StudentsBottomNavBar extends StatefulWidget {
-  const StudentsBottomNavBar({super.key});
+  final Students student;
+ const StudentsBottomNavBar({super.key,required this.student});
 
   @override
   State<StudentsBottomNavBar> createState() => _StudentsBottomNavBarState();
@@ -15,13 +19,18 @@ class StudentsBottomNavBar extends StatefulWidget {
 class _StudentsBottomNavBarState extends State<StudentsBottomNavBar> {
   int _page = 1;
   int _index = 1;
+late final List<Widget> pages;
 
-
-  List<Widget> pages = [
-    DiscussionScreen(),
-    StudentHomeScreen(),
-    AboutUsScreen(),
-  ];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+     pages = [
+      DiscussionScreen(),
+      StudentHomeScreen(student: widget.student,),
+      AboutUsScreen(),
+    ];
+  }
 
   void onTapped(int index) {
     setState(() {
@@ -32,13 +41,18 @@ class _StudentsBottomNavBarState extends State<StudentsBottomNavBar> {
 
   @override
   Widget build(BuildContext context) {
+    // print(widget.student.name);
+    final student = widget.student;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Hi, Rajanish Singh"),
+        title: Text("Hi, ${student.name}"),
         // centerTitle: true,
         leading: IconButton(onPressed: (){}, icon: Icon(Icons.menu,size: 32,)),
         actions: [
-          IconButton(onPressed: (){}, icon: Icon(Icons.notifications,size: 32,),)
+          IconButton(onPressed: (){
+            FirebaseAuth.instance.signOut();
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
+          }, icon: Icon(Icons.notifications,size: 32,),)
         ],
       ),
       body: pages[_page],

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wisdom_waves_by_nitin/comman/widgets/bottom_nav_bar.dart';
 import 'package:wisdom_waves_by_nitin/features/publics/screens/home_screen.dart';
 import 'dart:async';
 
@@ -29,12 +31,37 @@ class _SplashScreenState extends State<SplashScreen> {
     });
 
     // Navigate after 3.5 seconds
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const OnboardingScreen()),
-      );
+    Future.delayed(const Duration(seconds: 3), ()async{
+     final seen = await checkOnboarding();
+     // if(!mounted)return;
+     if(seen){
+       // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => BottomAppBar(),));
+       Navigator.pushReplacement(
+         context,
+         MaterialPageRoute(builder: (_) =>  BottomNavBar()),
+       );
+     } else{
+       Navigator.pushReplacement(
+         context,
+         MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+       );
+     }
+
+     // Navigator.pushReplacement(
+     //   context,
+     //   MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+     // );
+
     });
+  }
+
+  Future<bool> checkOnboarding()async{
+    SharedPreferences preferences =await SharedPreferences.getInstance();
+    bool seen = preferences.getBool('onboardingSeen')??false;
+    if(!seen){
+      preferences.setBool('onboardingSeen', true);
+    }
+    return seen;
   }
 
   @override

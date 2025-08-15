@@ -31,7 +31,7 @@ Future<void> login(String user , String password,BuildContext context)async{
     }
     // all success
     // showMessageDialog(context: context, title: "Logged in", message: "Welcome to Wisdom Waves By Nitin");
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StudentsBottomNavBar(),));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StudentsBottomNavBar(student: student,),));
 
   }on FirebaseAuthException catch(e){
     // Firebase Auth errors

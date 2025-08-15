@@ -1,10 +1,16 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:wisdom_waves_by_nitin/Custom_Widget/button.dart';
 import 'package:wisdom_waves_by_nitin/constant/app_colors.dart';
 import 'package:wisdom_waves_by_nitin/features/publics/widgets/courses_card.dart';
+import 'package:wisdom_waves_by_nitin/features/students/auth/services/auth_services.dart';
+import 'package:wisdom_waves_by_nitin/features/students/fee/services/fee_services.dart';
+import 'package:wisdom_waves_by_nitin/features/students/students_bottom_nav_bar.dart';
 
+import '../../../Model/students_model.dart';
 import '../../students/auth/screens/login_screen.dart';
 import '../widgets/announcement_cart.dart';
 import '../widgets/topper_carousel.dart';
@@ -45,8 +51,6 @@ class HomeScreen extends StatelessWidget {
     },
   ];
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,8 +71,16 @@ class HomeScreen extends StatelessWidget {
               SizedBox(height: 10),
               CustomButton(
                 text: "Login as a Student -> ",
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
+                onPressed: () async
+                {
+                  bool isLoggedIn = FirebaseAuth.instance.currentUser != null;
+                  if(isLoggedIn){
+                    String uid = FirebaseAuth.instance.currentUser!.uid;
+                    final student = await FirebaseFirestore.instance.collection("students").where('uid',isEqualTo: uid).limit(1).get();
+                     Navigator.push(context, MaterialPageRoute(builder: (context) => StudentsBottomNavBar(student: Students.fromMap(student.docs.first.data()),),));
+                  }else{
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
+                  }
                 },
                 fontSize: 22,
               ),
