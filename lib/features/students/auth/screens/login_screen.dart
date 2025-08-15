@@ -20,6 +20,20 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   AuthServices authServices = AuthServices();
+  final formKey = GlobalKey<FormState>();
+  // String userId = "ww${emailController.text.trim().toString()}";
+ bool isLoading = false;
+
+  void login()async{
+    setState(() {
+      isLoading = true;
+    });
+    await authServices.login(emailController.text.trim(), passwordController.text.trim(), context);
+    setState(() {
+      isLoading = false;
+    });
+  }
+
 
   @override
   void dispose() {
@@ -67,57 +81,71 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 32),
             // Username Field
-            TextFormField(
-              controller: emailController,
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.person),
-                hintText: "UserId",
-                filled: true,
-                fillColor: Colors.white,
-                contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Password Field
-            TextFormField(
-              controller: passwordController,
-              obscureText: _obscureText,
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.lock),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _obscureText ? Icons.visibility_off: Icons.visibility,
+            Form(
+              key: formKey,
+                child: Column(children: [
+              TextFormField(
+                controller: emailController,
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.person),
+                  hintText: "UserId",
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
                   ),
-                  onPressed: () {
-                    setState(() {
-                      _obscureText = !_obscureText;
-                    });
-                  },
                 ),
-                hintText: "Password",
-                filled: true,
-                fillColor: Colors.white,
-                contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
+                validator: (value) {
+                  if(value!.isEmpty || value == null){
+                    return "Please enter userID";
+                  }
+                  return null;
+                },
               ),
-            ),
-            const SizedBox(height: 28),
-            // Login Button with Gradient
-            CustomButton(text: "Login", onPressed: ()async{
-              // if(emailController.text.toString().trim().isEmpty && passwordController.text.toString().trim().isEmpty){
-              //   showCustomSnackBar(text: "Please enter data", context: context);
-              // }
-              // await authServices.login(emailController.text.toString(), passwordController.text.toString(), context);
-            Navigator.push(context, MaterialPageRoute(builder: (context) => StudentsBottomNavBar(),));
-            },),
+              const SizedBox(height: 16),
+
+              // Password Field
+              TextFormField(
+                controller: passwordController,
+                obscureText: _obscureText,
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.lock),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureText ? Icons.visibility_off: Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureText = !_obscureText;
+                      });
+                    },
+                  ),
+                  hintText: "Password",
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                validator: (value) {
+                  if(value!.isEmpty || value == null){
+                    return "Please enter password";
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 28),
+              // Login Button with Gradient
+              CustomButton(text: "Login",isLoading: isLoading,onPressed: (){
+                if(formKey.currentState!.validate()){
+                  login();
+                }
+              },),
+            ],))
           ],
         ),
       ),

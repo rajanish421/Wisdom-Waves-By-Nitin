@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
+  final bool isLoading ;
   final String text;
   final VoidCallback onPressed;
   final Color backgroundColor;
@@ -11,7 +12,7 @@ class CustomButton extends StatelessWidget {
   final double width;
   final double height;
 
-  const CustomButton({
+   const CustomButton({
     Key? key,
     required this.text,
     required this.onPressed,
@@ -21,7 +22,8 @@ class CustomButton extends StatelessWidget {
     this.fontSize = 16.0,
     this.padding = const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
     this.width = double.infinity,
-    this.height = 60
+    this.height = 60,
+    this.isLoading = false,
   }) : super(key: key);
 
   @override
@@ -38,8 +40,8 @@ class CustomButton extends StatelessWidget {
           ),
           elevation: 4,
         ),
-        onPressed: onPressed,
-        child: Text(
+        onPressed:isLoading ? (){}: onPressed,
+        child:isLoading ? CircularProgressIndicator(color: Colors.white,): Text(
           text,
           style: TextStyle(
             color: textColor,
