@@ -44,7 +44,7 @@ dependencies:
   percent_indicator: ^4.2.5
   shimmer: ^3.0.0
   shared_preferences: ^2.5.3
-  provider: ^6.1.5
+  provider: ^6.1.5+1
   pie_chart: ^5.4.0
   firebase_core: ^4.0.0
   firebase_auth: ^6.0.0

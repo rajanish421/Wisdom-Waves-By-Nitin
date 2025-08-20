@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:wisdom_waves_by_nitin/Model/test_model.dart';
 import 'package:wisdom_waves_by_nitin/features/students/test/screens/QuestionScreen.dart';
 
 import '../../../../Model/quiz_model.dart';
@@ -8,8 +9,9 @@ import '../../../../comman/widgets/show_snack_bar.dart';
 import '../services/quiz_services.dart';
 
 class QuizDetailsScreen extends StatefulWidget {
-  final QuizModel quiz;
-  const QuizDetailsScreen({super.key,required this.quiz});
+  final int index;
+  final TestModel test;
+  const QuizDetailsScreen({super.key,required this.test,required this.index});
 
   @override
   State<QuizDetailsScreen> createState() => _QuizDetailsScreenState();
@@ -41,18 +43,18 @@ class _QuizDetailsScreenState extends State<QuizDetailsScreen> {
  // }
 
   void isQuizLive() {
-    int startTime = widget.quiz.startTime.toUtc().millisecondsSinceEpoch;
-    int endTime = widget.quiz.endTime.toUtc().millisecondsSinceEpoch;
-    int currentTime = DateTime.now().millisecondsSinceEpoch;
-    print(startTime);
-    print(endTime);
-    print(currentTime);
+    // int startTime = widget.quiz.startTime.toUtc().millisecondsSinceEpoch;
+    // int endTime = widget.quiz.endTime.toUtc().millisecondsSinceEpoch;
+    // endTime);
+    // print(currentTime);    int currentTime = DateTime.now().millisecondsSinceEpoch;
+    // print(startTime);
+    // print(
 
-    if (currentTime>=startTime && currentTime <=endTime) {
-      print("✅ Quiz is OPEN");
-    } else {
-      print("❌ Quiz is CLOSED");
-    }
+    // if (currentTime>=startTime && currentTime <=endTime) {
+    //   print("✅ Quiz is OPEN");
+    // } else {
+    //   print("❌ Quiz is CLOSED");
+    // }
 
 
   }
@@ -127,7 +129,7 @@ class _QuizDetailsScreenState extends State<QuizDetailsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "🔥 ${widget.quiz.title}",
+                      "🔥 ${widget.test.title}",
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -136,7 +138,7 @@ class _QuizDetailsScreenState extends State<QuizDetailsScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      widget.quiz.category,
+                      widget.test.batchName,
                       style: TextStyle(color: Colors.white70),
                     ),
                     const SizedBox(height: 20),
@@ -144,7 +146,7 @@ class _QuizDetailsScreenState extends State<QuizDetailsScreen> {
                       children: [
                         Icon(Icons.timer_sharp, color: Colors.white),
                         const SizedBox(width: 8),
-                        Text("Start : ${widget.quiz.startTime}", style: TextStyle(color: Colors.white)),
+                        Text("Duration: ${widget.test.duration}", style: TextStyle(color: Colors.white)),
                       ],
                     ),
                     const SizedBox(height: 8),
@@ -152,7 +154,7 @@ class _QuizDetailsScreenState extends State<QuizDetailsScreen> {
                       children: [
                         Icon(Icons.timer_off, color: Colors.white),
                         const SizedBox(width: 8),
-                        Text("End : ${widget.quiz.endTime}", style: TextStyle(color: Colors.white)),
+                        Text("End : ", style: TextStyle(color: Colors.white)),
                       ],
                     ),
                     const SizedBox(height: 8),
@@ -160,7 +162,7 @@ class _QuizDetailsScreenState extends State<QuizDetailsScreen> {
                       children: [
                         Icon(Icons.help_outline, color: Colors.white),
                         const SizedBox(width: 8),
-                        Text("Questions: ${widget.quiz.questions.length}", style: TextStyle(color: Colors.white)),
+                        Text("Questions: 12", style: TextStyle(color: Colors.white)),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -191,13 +193,8 @@ class _QuizDetailsScreenState extends State<QuizDetailsScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed:() async {
-                    // Navigate to Quiz Screen
-                    // if(await isAttempted()){
-                    //   showSnackBar(text: "Quiz Already attempted!", context: context);
-                    // }else{
-                    //   // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => QuizScreen(quiz: widget.quiz,),));
-                    // }
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(quiz: widget.quiz),));
+
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => QuizScreen(testId: widget.test.testId,index:widget.index),));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor:time? Colors.greenAccent.shade400:Colors.grey.shade800,
