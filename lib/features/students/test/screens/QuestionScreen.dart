@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wisdom_waves_by_nitin/Custom_Widget/button.dart';
 import 'package:wisdom_waves_by_nitin/Model/question_model.dart';
+import 'package:wisdom_waves_by_nitin/Model/result_model.dart';
 import 'package:wisdom_waves_by_nitin/constant/app_colors.dart';
 import 'package:wisdom_waves_by_nitin/features/students/test/screens/resuiltScreen.dart';
 
@@ -9,16 +11,17 @@ import '../../../../Model/quiz_model.dart';
 import '../../../../Model/test_model.dart';
 
 class QuizScreen extends StatefulWidget {
-  final String testId;
+  final TestModel test;
   final int index;
 
-  const QuizScreen({super.key, required this.testId,required this.index});
+  const QuizScreen({super.key, required this.test,required this.index});
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();
 }
 
 class _QuizScreenState extends State<QuizScreen> {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
   // final List<Question> questions = [];
   int currentQueIndex = 0;
 
@@ -51,7 +54,17 @@ class _QuizScreenState extends State<QuizScreen> {
     // });
   }
 
-  void finishQuiz(int index, int ans) async {
+  void finishQuiz() async {
+
+    SharedPreferences pref = await  SharedPreferences.getInstance();
+    final userId = await pref.getString("userId");
+    print(userId);
+    final docRef = firestore.collection("tests").doc(widget.test.testId).collection("results").doc();
+
+    final result = ResultModel(resultId: docRef.id, testId: widget.test.testId, userId:userId.toString(), testTitle: widget.test.title, marks: sum, totalMarks: widget.test.totalMarks, attemptDate: DateTime.now());
+
+        docRef.set(result.toMap());
+  }
     // if (questions[currentQueIndex].options[index] == ans) {
     //   sum++;
     // }
@@ -73,7 +86,7 @@ class _QuizScreenState extends State<QuizScreen> {
     //         ResuiltScreen(score: sum, totalQuestion: widget.questions.length),
     //   ),
     // );
-  }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +102,7 @@ class _QuizScreenState extends State<QuizScreen> {
         stream:
             FirebaseFirestore.instance
                 .collection("tests")
-                .doc(widget.testId)
+                .doc(widget.test.testId)
                 .collection("questions")
                 .snapshots(),
         builder: (context, snapshot) {
@@ -176,12 +189,13 @@ class _QuizScreenState extends State<QuizScreen> {
 
 
                   if(selectedOpt != -1) {
-                    setState(() {
+                    setState((){
                       if (currentQueIndex < data.length - 1) {
                         print(sum);
                         currentQueIndex++;
                         selectedOpt = -1;
                       }else{
+                       finishQuiz();
                         Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => ResuiltScreen(score: sum,totalQuestion: data.length,),));
                       }
 

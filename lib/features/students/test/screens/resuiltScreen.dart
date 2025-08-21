@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'package:wisdom_waves_by_nitin/Custom_Widget/button.dart';
+import 'package:wisdom_waves_by_nitin/features/students/students_bottom_nav_bar.dart';
 class ResuiltScreen extends StatefulWidget {
   int score;
   int totalQuestion;
@@ -91,31 +93,31 @@ class _ResuiltScreenState extends State<ResuiltScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Container(
-                  alignment: Alignment.centerRight,
-                  width: double.infinity,
-                  height: 50,
-                  child: PopupMenuButton<String>(itemBuilder: (context) {
-                    return  <PopupMenuEntry<String>>[
-                      PopupMenuItem(child: Text("Score History"),
-                        onTap: (){
-                          // Provider.of<HistoryProvider>(context,listen: false).addScore("${widget.score}/${widget.totalQuestion}");
-                          //
-                          // Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                          //     HistoryScreen(userName: name,),));
-                        },
-                      ),
-                      PopupMenuItem(child: Text("LeaderBoard"),
-                        onTap: (){
-                          // Provider.of<HistoryProvider>(context,listen: false).addScore("${widget.score}/${widget.totalQuestion}");
-
-                          // Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                          //     LeaderboardScreen(),));
-                        },
-                      ),
-                    ];
-                  },),
-                ),
+                // Container(
+                //   alignment: Alignment.centerRight,
+                //   width: double.infinity,
+                //   height: 50,
+                //   child: PopupMenuButton<String>(itemBuilder: (context) {
+                //     return  <PopupMenuEntry<String>>[
+                //       PopupMenuItem(child: Text("Score History"),
+                //         onTap: (){
+                //           // Provider.of<HistoryProvider>(context,listen: false).addScore("${widget.score}/${widget.totalQuestion}");
+                //           //
+                //           // Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                //           //     HistoryScreen(userName: name,),));
+                //         },
+                //       ),
+                //       PopupMenuItem(child: Text("LeaderBoard"),
+                //         onTap: (){
+                //           // Provider.of<HistoryProvider>(context,listen: false).addScore("${widget.score}/${widget.totalQuestion}");
+                //
+                //           // Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                //           //     LeaderboardScreen(),));
+                //         },
+                //       ),
+                //     ];
+                //   },),
+                // ),
                 // SizedBox(height: MediaQuery.of(context).size.height*0.05,),
                 Container(
                   width: MediaQuery.of(context).size.width*0.8,
@@ -173,16 +175,12 @@ class _ResuiltScreenState extends State<ResuiltScreen> {
                 SizedBox(
                   height: 50,
                   width: MediaQuery.of(context).size.width*0.9,
-                  child: ElevatedButton(
-                    onPressed: (){
-                      Navigator.of(context).popUntil((route) => route.isFirst);
-                    },
-                    child: Text("Back To Home",style: Theme.of(context).textTheme.labelSmall,),
-                    style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                        backgroundColor: Colors.lightBlueAccent
-                    ),
-                  ),
+                  child: CustomButton(text: "Back To Home", onPressed: (){
+                    int count = 0;
+                    Navigator.of(context).popUntil((route) {
+                      return count++ == 1; // stop after popping once → goes back to 2nd screen
+                    });
+                  }),
                 ),
                 SizedBox(height: 20,),
                 // SizedBox(

@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wisdom_waves_by_nitin/Model/students_model.dart';
 import 'package:wisdom_waves_by_nitin/comman/widgets/show_snack_bar.dart';
 import 'package:wisdom_waves_by_nitin/utills/show_message_dialogue.dart';
@@ -17,6 +18,8 @@ class AuthServices{
 
 Future<void> login(String user , String password,BuildContext context)async{
   String userId = "${user}@gmail.com";
+  SharedPreferences _preferences = await SharedPreferences.getInstance();
+  
   try{
     // user login
     UserCredential credential = await _firebaseAuth.signInWithEmailAndPassword(email: userId, password: password);
@@ -29,9 +32,13 @@ Future<void> login(String user , String password,BuildContext context)async{
         showMessageDialog(context: context, title: "Login failed", message: "Please meet admin",isSuccess: false);
         return;
     }
+
+    // save userId and UserName in local database -> sharedPreference
+    await _preferences.setString("userId", user);
+
     // all success
     // showMessageDialog(context: context, title: "Logged in", message: "Welcome to Wisdom Waves By Nitin");
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StudentsBottomNavBar(student: student,),));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StudentsBottomNavBar(student : student,),));
 
   }on FirebaseAuthException catch(e){
     // Firebase Auth errors
