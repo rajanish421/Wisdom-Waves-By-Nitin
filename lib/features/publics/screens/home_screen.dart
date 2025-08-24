@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 import 'package:wisdom_waves_by_nitin/Custom_Widget/button.dart';
 import 'package:wisdom_waves_by_nitin/constant/app_colors.dart';
 import 'package:wisdom_waves_by_nitin/features/publics/widgets/courses_card.dart';
@@ -14,10 +15,18 @@ import '../../../Model/students_model.dart';
 import '../../students/auth/screens/login_screen.dart';
 import '../widgets/announcement_cart.dart';
 import '../widgets/topper_carousel.dart';
+import '../widgets/video_card.dart';
 import 'feature_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
 
 
   final List<Map<String, String>> announcements = [
@@ -148,7 +157,6 @@ class HomeScreen extends StatelessWidget {
                   Spacer(),
                   GestureDetector(
                       onTap: (){
-
                       },
                       child: Text("See all",style: TextStyle(color: Colors.red),)),
                 ],

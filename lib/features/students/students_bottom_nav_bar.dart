@@ -2,6 +2,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:wisdom_waves_by_nitin/Model/students_model.dart';
+import 'package:wisdom_waves_by_nitin/comman/widgets/profile.dart';
 import 'package:wisdom_waves_by_nitin/features/students/auth/screens/login_screen.dart';
 import 'package:wisdom_waves_by_nitin/features/students/discussion/screens/discussion_screen.dart';
 import 'package:wisdom_waves_by_nitin/features/students/homescreen/screens/students_home_screen.dart';
@@ -46,15 +47,14 @@ late final List<Widget> pages;
     return Scaffold(
       appBar: AppBar(
         title: Text("Hi, ${student.name}"),
-        // centerTitle: true,
-        leading: IconButton(onPressed: (){}, icon: Icon(Icons.menu,size: 32,)),
+        centerTitle: true,
+        // leading: IconButton(onPressed: (){}, icon: Icon(Icons.menu,size: 32,)),
         actions: [
           IconButton(onPressed: (){
-            FirebaseAuth.instance.signOut();
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
           }, icon: Icon(Icons.notifications,size: 32,),)
         ],
       ),
+      drawer:ProfileScreen(student: student,),
       body: pages[_page],
       bottomNavigationBar: CurvedNavigationBar(
           backgroundColor: AppColors.backgroundColor,

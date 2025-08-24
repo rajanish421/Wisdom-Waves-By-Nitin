@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:wisdom_waves_by_nitin/Model/students_model.dart';
 import 'package:wisdom_waves_by_nitin/constant/app_colors.dart';
+import 'package:wisdom_waves_by_nitin/features/students/announcement/screens/announcement_home_screen.dart';
+import 'package:wisdom_waves_by_nitin/features/students/assignment/screens/assignment_home_screen.dart';
+import 'package:wisdom_waves_by_nitin/features/students/attendence/screens/attendence_home_screen.dart';
+import 'package:wisdom_waves_by_nitin/features/students/download/screens/download_home_screen.dart';
 import 'package:wisdom_waves_by_nitin/features/students/homescreen/widgets/feature_card.dart';
+import 'package:wisdom_waves_by_nitin/features/students/resource/screens/resource_home_screen.dart';
 import 'package:wisdom_waves_by_nitin/features/students/test/screens/main_screen.dart';
 
 import '../../fee/screens/fee_screen.dart';
@@ -52,32 +57,46 @@ class StudentHomeScreen extends StatelessWidget {
                     child: FeatureCard(icon: Icons.attach_money, title: "Fees"),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AttendanceHomeScreen(),));
+                    },
                     child: FeatureCard(
                       icon: Icons.check_circle,
                       title: "Attendance",
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AssignmentHomeScreen(),));
+
+                    },
                     child: FeatureCard(
                       icon: Icons.assignment_turned_in,
                       title: "Assignment",
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => DownloadHomeScreen(),));
+
+                    },
                     child: FeatureCard(
                       icon: Icons.download,
                       title: "Downloads",
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => ResourceHomeScreen(),));
+
+                    },
                     child: FeatureCard(icon: Icons.folder, title: "Resource"),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AnnouncementHomeScreen(),));
+
+                    },
                     child: FeatureCard(
                       icon: Icons.campaign,
                       title: "Announcements",

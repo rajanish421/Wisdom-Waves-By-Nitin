@@ -3,15 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:wisdom_waves_by_nitin/constant/app_colors.dart';
 
 import '../../publics/widgets/icon_info_card.dart';
+import '../../publics/widgets/video_card.dart';
 
-class AboutUsScreen extends StatelessWidget {
+class AboutUsScreen extends StatefulWidget {
   AboutUsScreen({super.key});
 
+  @override
+  State<AboutUsScreen> createState() => _AboutUsScreenState();
+}
+
+class _AboutUsScreenState extends State<AboutUsScreen> {
   final List<String> bannerList = [
     "assets/images/banner1.jpeg",
     "assets/images/banner2.jpeg",
     "assets/images/banner3.jpeg",
   ];
+
   final List<String> facultyList = [
     "assets/images/teacher1.jpeg",
     // "assets/images/banner2.jpeg",
@@ -47,6 +54,10 @@ class AboutUsScreen extends StatelessWidget {
                   ],
                 ),
               ],
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Divider(),
             ),
             SizedBox(height: 10),
             CarouselSlider(
@@ -84,6 +95,50 @@ class AboutUsScreen extends StatelessWidget {
                     );
                   }).toList(),
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Divider(),
+            ),
+            SizedBox(height: 10,),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Section Title
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    "Welcome to The Wisdom Waves",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 5),
+
+                // Subtitle
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    "Discover our vision and journey in 2 minutes",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ),
+
+                // Video Player
+                VideoCard(videoUrl: "assets/videos/intro.mp4"),
+
+                const SizedBox(height: 5),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Divider(),
+            ),
             SizedBox(height: 10,),
             Padding(
               padding: const EdgeInsets.only(left: 8.0),
@@ -95,6 +150,71 @@ class AboutUsScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text("At Wisdom Waves Coaching, we don't just teach—we transform futures. With expert faculty, personalized attention, and a results-driven approach, we help students unlock their full potential and achieve academic excellence"),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Divider(),
+            ),
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Text(
+                "Founder of The Wisdom Waves",
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+            ),
+            SizedBox(height: 10),
+            Center(
+              child: Card(
+                color: Colors.white,
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      // Founder Image
+                      CircleAvatar(
+                        radius: 60,
+                        backgroundImage: AssetImage("assets/images/teacher1.jpeg"),
+                      ),
+                      SizedBox(height: 12),
+                      // Founder Name
+                      Text(
+                        "Mr. Nitin Kumar", // <-- Founder name
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blueAccent,
+                        ),
+                      ),
+                      SizedBox(height: 6),
+
+                      // Designation
+                      Text(
+                        "Founder & Mentor",
+                        style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                      ),
+                      SizedBox(height: 12),
+
+                      // Short Bio
+                      Text(
+                        "With a vision to transform education, our founder established "
+                            "Wisdom Waves to empower students with knowledge, discipline, "
+                            "and excellence. His passion drives the institute forward.",
+                        style: TextStyle(fontSize: 15, height: 1.4),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Divider(),
             ),
             SizedBox(height: 10,),
             Padding(
@@ -122,6 +242,10 @@ class AboutUsScreen extends StatelessWidget {
                     );
               },),
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Divider(),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -145,6 +269,7 @@ class AboutUsScreen extends StatelessWidget {
                 ),
               ],
             ),
+            SizedBox(height: 20,),
 
           ],
         ),
