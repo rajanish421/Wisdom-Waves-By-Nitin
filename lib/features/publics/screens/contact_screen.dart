@@ -21,7 +21,7 @@ class ContactScreen extends StatelessWidget {
   final String facebook = "https://facebook.com/yourpage";
   final String youtube = "https://youtube.com/@wisdomwavesbynitin";
   final String mobile = "7081333178";
-  final String whatsapp = "919876543210"; // ✅ must include country code
+  final String whatsapp = "918830387561"; // ✅ must include country code
 
   Future<void> _launchUrl(String url) async {
     final Uri uri = Uri.parse(url);
@@ -35,6 +35,12 @@ class ContactScreen extends StatelessWidget {
     final url = "https://wa.me/$phone?text=$encodedMessage";
     await _launchUrl(url);
   }
+
+  final String message =
+      "Hello Wisdom Waves Team,"
+      "I am interested in taking admission at your institute."
+      "Please share the admission process, fee structure, and available courses."
+      "Thank you.";
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +82,7 @@ class ContactScreen extends StatelessWidget {
                 title: "WhatsApp",
                 subtitle: "Chat instantly",
                 color: Colors.teal,
-                onTap: () => _openWhatsApp(whatsapp, "Hello, I want details about coaching"),
+                onTap: () => _openWhatsApp(whatsapp, message),
               ),
               contactAction(
                 icon: Icons.email,
@@ -88,7 +94,7 @@ class ContactScreen extends StatelessWidget {
               contactAction(
                 icon: Icons.location_on,
                 title: "Visit Us",
-                subtitle: "Sapaha Road, Near Central Bank, Wisdom Waves",
+                subtitle: "Sapaha Road, Near Central Bank, Kushinagar UP , Wisdom Waves",
                 color: Colors.blue,
                 onTap: () => _launchUrl("https://maps.google.com/?q=Wisdom Waves Coaching"),
               ),

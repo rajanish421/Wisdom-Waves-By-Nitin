@@ -58,7 +58,7 @@ class StudentHomeScreen extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => AttendanceHomeScreen(),));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => StudentAttendanceDashboard(studentId: student.userId,),));
                     },
                     child: FeatureCard(
                       icon: Icons.check_circle,
