@@ -1,60 +1,54 @@
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class Fee {
-  String feeId;
-  String name;
-  String userId;
-  int totalFee;
-  String dueFee;
-  Map<String, dynamic> lastPayment;
-  String batch;
-  List<Map<String, dynamic>> payments;
 
-  Fee({
-    this.payments = const [],
-    required this.userId,
+class FeeModel {
+  final String feeId;
+  final String lastPayMonthId;
+  final int lastPaymentMonth;
+  final String userId;
+  final String batchId;
+  final int batchFee;   // Monthly fee amount
+  final int totalPaid;  // Total amount paid
+  final int totalDue;   // Total amount still due
+
+  FeeModel({
     required this.feeId,
-    this.dueFee = "0",
-    Map<String, dynamic>? lastPayment,
-    required this.totalFee,
-    required this.batch,
-    required this.name,
-  }) : lastPayment = lastPayment ??
-      {
-        "amount": "0",
-        "paidAt": DateTime.now(),
-      };
+    required this.lastPayMonthId,
+    required this.lastPaymentMonth,
+    required this.userId,
+    required this.batchId,
+    required this.batchFee,
+    required this.totalPaid,
+    required this.totalDue,
+  });
 
-  /// Converts a Fee object into a Map.
+  /// Convert object -> Firestore
   Map<String, dynamic> toMap() {
     return {
-      'feeId': feeId,
-      'userId': userId,
-      'totalFee': totalFee,
-      'dueFee': dueFee,
-      'lastPayment': lastPayment,
-      'payments': payments,
-      'batch': batch,
-      'name': name,
+      "feeId": feeId,
+      "lastPayMonthId":lastPayMonthId,
+      'lastPaymentMonth':lastPaymentMonth,
+      "userId": userId,
+      "batchId": batchId,
+      "batchFee": batchFee,
+      "totalPaid": totalPaid,
+      "totalDue": totalDue,
     };
   }
 
-  /// Creates a Fee object from a Map.
-  factory Fee.fromMap(Map<String, dynamic> map) {
-    return Fee(
-      feeId: map['feeId'] ?? '',
-      userId: map['userId'] ?? '',
-      totalFee: (map['totalFee'] ?? 0).toInt(),
-      dueFee: (map['dueFee'] ?? "0"),
-      lastPayment: map['lastPayment'] != null
-          ? Map<String, dynamic>.from(map['lastPayment'])
-          : {
-        "amount": "0",
-        "paidAt": DateTime.now(),
-      },
-      payments: List<Map<String, dynamic>>.from(map['payments'] ?? []),
-      batch: map['batch'] ?? '',
-      name: map['name'] ?? '',
+  /// Convert Firestore -> object
+  factory FeeModel.fromMap(Map<String, dynamic> map) {
+    return FeeModel(
+      feeId: map["feeId"] ?? "",
+      lastPayMonthId: map["lastPayMonthId"]??"",
+      lastPaymentMonth: map['lastPaymentMonth']??0,
+      userId: map["userId"] ?? "",
+      batchId: map["batchId"] ?? "",
+      batchFee: map["batchFee"] ?? 0,
+      totalPaid: map["totalPaid"] ?? 0,
+      totalDue: map["totalDue"] ?? 0,
     );
   }
 }
@@ -63,72 +57,69 @@ class Fee {
 
 
 
+class FeeMonth {
+  final String monthId;     // e.g., "2025-05"
+  final int year;
+  final int studentMCount;
+  final int startMToEndMCounter;
+  final int month;
+  final int amountPaid;
+  final int currDue;
+  final int pastDue;
+  final int feeTillThisMonths; // 👈 now added here
+  final Timestamp? paidAt;
+  final String status; // "Paid" or "Unpaid"
+  final Timestamp? createdAt;
 
+  FeeMonth({
+    required this.monthId,
+    required this.year,
+    required this.studentMCount,
+    required this.startMToEndMCounter,
+    required this.month,
+    required this.amountPaid,
+    required this.currDue,
+    required this.pastDue,
+    required this.feeTillThisMonths,
+    this.paidAt,
+    required this.status,
+    this.createdAt,
+  });
 
+  /// Convert object -> Firestore
+  Map<String, dynamic> toMap() {
+    return {
+      "monthId": monthId,
+      "year": year,
+      'studentMCount':studentMCount,
+      'startMToEndMCounter':startMToEndMCounter,
+      "month": month,
+      "amountPaid": amountPaid,
+      "currDue": currDue,
+      "pastDue": pastDue,
+      "feeTillThisMonths": feeTillThisMonths,
+      "paidAt": paidAt,
+      "status": status,
+      "createdAt": createdAt ?? FieldValue.serverTimestamp(),
+    };
+  }
 
+  /// Convert Firestore -> object
+  factory FeeMonth.fromMap(Map<String, dynamic> map) {
+    return FeeMonth(
+      monthId: map["monthId"] ?? "",
+      year: map["year"] ?? 0,
+      studentMCount: map['studentMCount']??0,
+      startMToEndMCounter: map['startMToEndMCounter']??0,
+      month: map["month"] ?? 0,
+      amountPaid: map["amountPaid"] ?? 0,
+      currDue: map["currDue"] ?? 0,
+      pastDue: map["pastDue"] ?? 0,
+      feeTillThisMonths: map["feeTillThisMonths"] ?? 0,
+      paidAt: map["paidAt"],
+      status: map["status"] ?? "Unpaid",
+      createdAt: map["createdAt"],
+    );
+  }
+}
 
-
-
-
-
-// import 'package:flutter/material.dart';
-//
-// class Fee {
-//   String feeId;
-//   String name;
-//   String userId;
-//   int totalFee;
-//   int dueFee;
-//   Map<int, dynamic>? lastPayment;
-//   String batch;
-//   List<Map<String, dynamic>> payments;
-//
-//   Fee({
-//     this.payments = const [],
-//     required this.userId,
-//     required this.feeId,
-//     this.dueFee = 0,
-//      this.lastPayment ,
-//     required this.totalFee,
-//     required this.batch,
-//     required this.name,
-//   });
-//
-//   /// Converts a Fee object into a Map.
-//   Map<String, dynamic> toMap() {
-//     return {
-//       'feeId': feeId,
-//       'userId': userId,
-//       'totalFee': totalFee,
-//       'dueFee': dueFee,
-//       'lastPayment': lastPayment,
-//       'payments': payments,
-//       'batch' : batch,
-//       'name' : name,
-//     };
-//   }
-//
-//   /// Creates a Fee object from a Map.
-//   factory Fee.fromMap(Map<String, dynamic> map) {
-//     return Fee(
-//       feeId: map['feeId'] ?? '',
-//       userId: map['userId'] ?? '',
-//       totalFee: map['totalFee']?.toInt() ?? 0,
-//       dueFee: map['dueFee']?.toInt() ?? 0,
-//       lastPayment: map['lastPayment'] != null
-//           ? Map<int, dynamic>.from(map['lastPayment'])
-//           : {},
-//       payments: List<Map<String, dynamic>>.from(map['payments'] ?? []),
-//       batch: map['batch']??'',
-//       name: map['name']??'',
-//     );
-//   }
-// }
-//
-//
-// // class Payment{
-// //   int amount;
-// //   DateTime paidAt;
-// //
-// //   Payment({required this.amount,required this.paidAt});
-// // }

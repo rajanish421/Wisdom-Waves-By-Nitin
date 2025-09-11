@@ -1,32 +1,39 @@
 import 'package:flutter/material.dart';
-import '../services/file_services.dart';
-import 'subject_screen.dart';
+import 'package:wisdom_waves_by_nitin/features/students/resource/screens/resource_screen.dart';
+import 'package:wisdom_waves_by_nitin/features/students/resource/screens/video_view_screen.dart';
 
-class ClassSelectionScreen extends StatelessWidget {
+import '../services/file_services.dart';
+
+
+class SubjectScreen extends StatelessWidget {
+  final String className;
   final FileService fileService = FileService();
+
+  SubjectScreen({required this.className});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Select Class")),
+      appBar: AppBar(title: Text("Subjects - $className")),
       body: FutureBuilder<List<String>>(
-        future: fileService.getClasses(),
+        future: fileService.getSubjects(className),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
           }
-          final classes = snapshot.data!;
+          final subjects = snapshot.data!;
           return ListView.builder(
-            itemCount: classes.length,
+            itemCount: subjects.length,
             itemBuilder: (context, index) {
+              final subject = subjects[index];
               return Card(
                 child: ListTile(
-                  title: Text(classes[index]),
+                  title: Text(subjects[index]),
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => SubjectScreen(className: classes[index]),
+                        builder: (_) => ResourceScreen(className: className,subjectName: subject,)
                       ),
                     );
                   },

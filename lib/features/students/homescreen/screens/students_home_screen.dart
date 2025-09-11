@@ -52,13 +52,13 @@ class StudentHomeScreen extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => FeeScreen(student: student,),));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => StudentFeeDashboard(userId: student.userId,),));
                     },
                     child: FeatureCard(icon: Icons.attach_money, title: "Fees"),
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => StudentAttendanceDashboard(studentId: student.userId,),));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => StudentAttendanceDashboard(student: student,),));
                     },
                     child: FeatureCard(
                       icon: Icons.check_circle,
@@ -87,7 +87,7 @@ class StudentHomeScreen extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ResourceHomeScreen(),));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => ClassSelectionScreen(),));
 
                     },
                     child: FeatureCard(icon: Icons.folder, title: "Resource"),

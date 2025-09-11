@@ -10,6 +10,7 @@ class Students {
   final int age;
   final String std;
   final String batch;
+  final String batchId;
   final String medium;
   final String school_name;
   final int contact_number;
@@ -28,6 +29,7 @@ class Students {
     required this.gender,
     required this.std,
     required this.batch,
+    required this.batchId,
     required this.medium,
     required this.school_name,
     required this.address,
@@ -50,6 +52,7 @@ class Students {
       'age': age,
       'std': std,
       'batch': batch,
+      'batchId':batchId,
       'medium': medium,
       'school_name': school_name,
       'contact_number': contact_number,
@@ -71,6 +74,7 @@ class Students {
       gender: map['gender'] ?? '',
       std: map['std'] ?? '',
       batch: map['batch'] ?? '',
+      batchId: map['batchId']??'',
       medium: map['medium'] ?? '',
       school_name: map['school_name'] ?? '',
       address: map['address'] ?? '',
@@ -100,6 +104,7 @@ class Students {
     int? age,
     String? std,
     String? batch,
+    String? batchId,
     String? medium,
     String? school_name,
     int? contact_number,
@@ -117,6 +122,7 @@ class Students {
       age: age ?? this.age,
       std: std ?? this.std,
       batch: batch ?? this.batch,
+      batchId: batchId?? this.batchId,
       medium: medium ?? this.medium,
       school_name: school_name ?? this.school_name,
       contact_number: contact_number ?? this.contact_number,

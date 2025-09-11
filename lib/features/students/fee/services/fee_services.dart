@@ -9,12 +9,12 @@ class FeeServices {
 
   // get fee data using userId
 
-Future<Fee?> getFee(String userId)async{
+Future<FeeModel?> getFee(String userId)async{
    final res = await firestore.collection("fee").doc(userId).get();
    if(!res.exists){
      return null;
    }
-   return Fee.fromMap(res.data()!);
+   return FeeModel.fromMap(res.data()!);
 }
 
 }

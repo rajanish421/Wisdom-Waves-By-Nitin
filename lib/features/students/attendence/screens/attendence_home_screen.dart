@@ -2,15 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:animations/animations.dart';
+import 'package:wisdom_waves_by_nitin/Model/students_model.dart';
+import 'package:wisdom_waves_by_nitin/features/students/attendence/screens/qr_code_generator_screen.dart';
 
 class StudentAttendanceDashboard extends StatefulWidget {
   // final String batchId;
-  final String studentId;
+  final Students student;
 
   const StudentAttendanceDashboard({
     Key? key,
     // required this.batchId,
-    required this.studentId,
+    required this.student,
   }) : super(key: key);
 
   @override
@@ -22,27 +24,25 @@ class _StudentAttendanceDashboardState
     extends State<StudentAttendanceDashboard> {
   int totalDays = 0;
   int presentDays = 0;
-  String batchId = "jliH1926aaS6bXPbxwMi";
 
   /// Fetch attendance percentage
   Future<void> calculateAttendance() async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection("attendance")
-        .doc(batchId)
-        .collection("dates")
-        .get();
+    final snapshot =
+        await FirebaseFirestore.instance
+            .collection("attendance")
+            .doc(widget.student.batchId)
+            .collection("dates")
+            .get();
 
     int present = 0;
     int total = snapshot.docs.length;
-    // print(total);
 
     for (var doc in snapshot.docs) {
       final data = doc.data();
-      print("-------------------------------------->>>>>>>>>>>>>>>>>>");
       final List students = data["students"] ?? [];
 
       final student = students.firstWhere(
-            (s) => s["userId"] == widget.studentId,
+        (s) => s["userId"] == widget.student.userId,
         orElse: () => null,
       );
       if (student != null && student["status"] == true) {
@@ -65,7 +65,7 @@ class _StudentAttendanceDashboardState
   @override
   Widget build(BuildContext context) {
     double percentage =
-    totalDays == 0 ? 0 : (presentDays / totalDays).clamp(0.0, 1.0);
+        totalDays == 0 ? 0 : (presentDays / totalDays).clamp(0.0, 1.0);
 
     return Scaffold(
       appBar: AppBar(
@@ -73,6 +73,24 @@ class _StudentAttendanceDashboardState
           "My Attendance",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => StudentQrPage(
+                        batchId: widget.student.batchId,
+                        name: widget.student.name,
+                        userId: widget.student.userId,
+                      ),
+                ),
+              );
+            },
+            icon: Icon(Icons.qr_code),
+          ),
+        ],
         backgroundColor: Colors.deepPurple,
       ),
       body: Column(
@@ -90,11 +108,14 @@ class _StudentAttendanceDashboardState
                 center: Text(
                   "${(percentage * 100).toStringAsFixed(1)}%",
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 20),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
                 ),
-                progressColor: percentage >= 0.75
-                    ? Colors.green
-                    : (percentage >= 0.5 ? Colors.orange : Colors.red),
+                progressColor:
+                    percentage >= 0.75
+                        ? Colors.green
+                        : (percentage >= 0.5 ? Colors.orange : Colors.red),
                 backgroundColor: Colors.grey.shade300,
                 circularStrokeCap: CircularStrokeCap.round,
               ),
@@ -112,19 +133,17 @@ class _StudentAttendanceDashboardState
             ),
           ),
 
-          // Animated List of past attendance
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection("attendance")
-                  .doc(batchId)
-                  .collection("dates")
-                  .orderBy(FieldPath.documentId, descending: true)
-                  .snapshots(),
+              stream:
+                  FirebaseFirestore.instance
+                      .collection("attendance")
+                      .doc(widget.student.batchId)
+                      .collection("dates")
+                      .orderBy(FieldPath.documentId, descending: true)
+                      .snapshots(),
               builder: (context, snapshot) {
-                // if(snapshot.connectionState == ConnectionState.waiting){
-                //   return CircularProgressIndicator();
-                // }
+
                 if (!snapshot.hasData) {
                   return const Center(child: Text("no data"));
                 }
@@ -145,25 +164,20 @@ class _StudentAttendanceDashboardState
                     final List students = data["students"] ?? [];
                     // print(students);
                     final student = students.firstWhere(
-                          (s) => s["userId"] == widget.studentId,
+                      (s) => s["userId"] == widget.student.userId,
                       orElse: () => null,
                     );
                     print(student);
-                    final status =
-                    student != null ? student["status"] : false;
+                    final status = student != null ? student["status"] : false;
                     print(status);
-                    return  Card(
+                    return Card(
                       color: Colors.white,
                       child: ListTile(
                         title: Text("Date: $date"),
                         subtitle: Text("Status: $status"),
                         trailing: Icon(
-                          status == true
-                              ? Icons.check_circle
-                              : Icons.cancel,
-                          color: status == true
-                              ? Colors.green
-                              : Colors.red,
+                          status == true ? Icons.check_circle : Icons.cancel,
+                          color: status == true ? Colors.green : Colors.red,
                         ),
                       ),
                     );
