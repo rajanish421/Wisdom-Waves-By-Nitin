@@ -27,7 +27,7 @@ late final List<Widget> pages;
     // TODO: implement initState
     super.initState();
      pages = [
-      DiscussionScreen(),
+      DiscussionScreen(student: widget.student,),
       StudentHomeScreen(student: widget.student,),
       AboutUsScreen(),
     ];

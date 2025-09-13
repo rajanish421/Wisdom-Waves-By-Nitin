@@ -1,111 +1,240 @@
+import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:record/record.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:wisdom_waves_by_nitin/Model/students_model.dart';
+import 'package:wisdom_waves_by_nitin/constant/app_colors.dart';
+import '../../../../Model/discussion_model.dart';
+import '../services/cloudinary_service.dart';
+import '../services/discussion_repository.dart';
+import '../widgets/message_tile.dart';
+import 'package:file_picker/file_picker.dart';
 
 class DiscussionScreen extends StatefulWidget {
-  const DiscussionScreen({super.key});
+  final Students student;
+  const DiscussionScreen({super.key , required this.student});
 
   @override
   State<DiscussionScreen> createState() => _DiscussionScreenState();
 }
 
 class _DiscussionScreenState extends State<DiscussionScreen> {
-  final TextEditingController _controller = TextEditingController();
+  final _repo = DiscussionRepository();
+  final _cloudinary = CloudinaryService(
+    cloudName: 'dosossycv',
+    uploadPreset: 'wisdom_waves',
+  );
 
-  // Dummy messages list (In real app, you will fetch from database e.g. Firebase)
-  List<Map<String, String>> messages = [
-    {"sender": "Amit", "message": "Hey guys, how's preparation going?"},
-    {"sender": "Priya", "message": "Doing well! What about you?"},
-    {"sender": "Rahul", "message": "Any update on the new timetable?"},
-  ];
+  final _textController = TextEditingController();
+  final _scrollController = ScrollController();
+  final _picker = ImagePicker();
+  // final _recorder = AudioRecorder();
+  // final _audioPlayer = AudioPlayer();
 
-  void _sendMessage() {
-    if (_controller.text.trim().isNotEmpty) {
-      setState(() {
-        messages.add({
-          "sender": "You",
-          "message": _controller.text.trim(),
-        });
-      });
-      _controller.clear();
-    }
+  bool _isSending = false;
+  // bool _isRecording = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // _initUser();
+  }
+
+  // Future<void> _initUser() async {
+  //   final user = FirebaseAuth.instance.currentUser;
+  //   if (user != null) {
+  //     userId = user.uid;
+  //     _name = user.displayName ?? 'User-${user.uid.substring(0, 6)}';
+  //   } else {
+  //     final cred = await FirebaseAuth.instance.signInAnonymously();
+  //     _uid = cred.user!.uid;
+  //     _name = 'User-${_uid.substring(0, 6)}';
+  //   }
+  //   setState(() {});
+  // }
+
+  Future<void> _sendText() async {
+    final text = _textController.text.trim();
+    if (text.isEmpty || _isSending) return;
+    _isSending = true;
+
+    final msg = DiscussionMessage(
+      senderId: widget.student.userId,
+      senderName: widget.student.name,
+      text: text,
+      timestamp: DateTime.now(),
+    );
+    await _repo.sendMessage(msg);
+    _textController.clear();
+    _scrollToBottom();
+    _isSending = false;
+  }
+
+
+  Future<void> _sendImage() async {
+    // final ImagePicker _picker = ImagePicker();
+
+    // Show a bottom sheet to let user choose Camera or Gallery
+    final ImageSource? source = await showModalBottomSheet<ImageSource>(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => Container(
+        padding: EdgeInsets.all(20),
+        height: 230,
+        child: Column(
+          children: [
+            Text("Select Image", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // Camera option
+                Column(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.camera_alt, size: 40,color: AppColors.appBarColor,),
+                      onPressed: () => Navigator.pop(context, ImageSource.camera),
+                    ),
+                    Text("Camera")
+                  ],
+                ),
+                // Gallery option
+                Column(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.photo, size: 40,color: AppColors.appBarColor),
+                      onPressed: () => Navigator.pop(context, ImageSource.gallery),
+                    ),
+                    Text("Gallery")
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (source == null) return; // User canceled
+
+    final xfile = await _picker.pickImage(source: source, imageQuality: 80);
+    if (xfile == null) return;
+
+    final url = await _cloudinary.uploadImage(File(xfile.path));
+    if (url == null) return;
+
+    final msg = DiscussionMessage(
+      senderId: widget.student.userId,
+      senderName: widget.student.name,
+      imageUrl: url,
+      timestamp: DateTime.now(),
+    );
+
+    await _repo.sendMessage(msg);
+    _scrollToBottom();
+  }
+
+
+
+  // Future<void> _toggleRecording() async {
+  //   if (_isRecording) {
+  //     final path = await _recorder.stop();
+  //     setState(() => _isRecording = false);
+  //     if (path == null) return;
+  //
+  //     final url = await _cloudinary.uploadAudio(File(path));
+  //     if (url == null) return;
+  //
+  //     final msg = DiscussionMessage(
+  //       senderId: _uid,
+  //       senderName: _name,
+  //       audioUrl: url,
+  //       timestamp: DateTime.now(),
+  //     );
+  //     await _repo.sendMessage(msg);
+  //     _scrollToBottom();
+  //   } else {
+  //     if (!await _recorder.hasPermission()) return;
+  //     await _recorder.start(const RecordConfig(), path: 'voice_${DateTime.now().millisecondsSinceEpoch}.m4a');
+  //     setState(() => _isRecording = true);
+  //   }
+  // }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    _scrollController.dispose();
+    // _audioPlayer.dispose();
+    // _recorder.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // appBar: AppBar(title: const Text('Community Discussion')),
       body: Column(
         children: [
-          // Chat messages
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(12),
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                bool isMe = messages[index]["sender"] == "You";
-                return Align(
-                  alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(vertical: 6),
-                    padding: const EdgeInsets.all(12),
-                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
-                    decoration: BoxDecoration(
-                      color: isMe ? Colors.deepPurple.shade100 : Colors.grey.shade200,
-                      borderRadius: BorderRadius.only(
-                        topLeft: const Radius.circular(12),
-                        topRight: const Radius.circular(12),
-                        bottomLeft: isMe ? const Radius.circular(12) : const Radius.circular(0),
-                        bottomRight: isMe ? const Radius.circular(0) : const Radius.circular(12),
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (!isMe)
-                          Text(
-                            messages[index]["sender"]!,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                              color: Colors.black54,
-                            ),
-                          ),
-                        Text(
-                          messages[index]["message"]!,
-                          style: const TextStyle(fontSize: 15),
-                        ),
-                      ],
-                    ),
-                  ),
+            child: StreamBuilder<List<DiscussionMessage>>(
+              stream: _repo.messagesStream(limit: 500),
+              builder: (context, snap) {
+                if (!snap.hasData) return const Center(child: CircularProgressIndicator());
+                final messages = snap.data!;
+                return ListView.builder(
+                  controller: _scrollController,
+                  itemCount: messages.length,
+                  itemBuilder: (_, i) {
+                    final m = messages[i];
+                    final isMe = m.senderId == widget.student.userId;
+                    return MessageTile(message: m, isMe: isMe);
+                  },
                 );
               },
             ),
           ),
-
-          // Message input box
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-            color: Colors.white,
+          SafeArea(
+            top: false,
             child: Row(
               children: [
+                IconButton(icon: const Icon(Icons.image), onPressed: _sendImage),
+                // IconButton(
+                //   icon: Icon(_isRecording ? Icons.mic_off : Icons.mic,
+                //       color: _isRecording ? Colors.red : Colors.deepPurple),
+                //   onPressed: _toggleRecording,
+                // ),
                 Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    maxLines: null,
-                    decoration: InputDecoration(
-                      hintText: "Type your message...",
-                      filled: true,
-                      fillColor: Colors.grey.shade100,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide.none,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: TextField(
+                      controller: _textController,
+                      minLines: 1,
+                      maxLines: 5,
+                      onSubmitted: (_) => _sendText(),
+                      decoration: InputDecoration(
+                        hintText: "Type a message",
+                        border: InputBorder.none,
                       ),
                     ),
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.send, color: Colors.deepPurple),
-                  onPressed: _sendMessage,
-                ),
+                IconButton(icon: const Icon(Icons.send), onPressed: _sendText),
               ],
             ),
           ),
