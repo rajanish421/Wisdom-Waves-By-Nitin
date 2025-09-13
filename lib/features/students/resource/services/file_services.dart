@@ -11,24 +11,34 @@ class FileService {
 
   /// ✅ Fetch all classes (distinct className values)
   Future<List<String>> getClasses() async {
-    QuerySnapshot snapshot = await _firestore.collection('files').get();
+    // QuerySnapshot snapshot = await _firestore.collection('files').get();
+    QuerySnapshot snapshot = await _firestore.collection('classes').get();
+
     return snapshot.docs
-        .map((doc) => doc['className'] as String)
-        .toSet() // unique values
-        .toList();
+        .map((doc) => doc['className'] as String) // unique values
+        .toList()..sort((a, b) {
+          int numA = int.parse(a);
+          int numB = int.parse(b);
+          return numA.compareTo(numB);
+        },);
   }
 
   /// ✅ Fetch subjects for a given class
   Future<List<String>> getSubjects(String className) async {
+    // QuerySnapshot snapshot = await _firestore
+    //     .collection('files')
+    //     .where('className', isEqualTo: className)
+    //     .get();
     QuerySnapshot snapshot = await _firestore
-        .collection('files')
-        .where('className', isEqualTo: className)
+        .collection('subjects')
         .get();
 
     return snapshot.docs
-        .map((doc) => doc['subject'] as String)
+        .map((doc) => doc['subjectName'] as String)
         .toSet()
-        .toList();
+        .toList()..sort((a, b) {
+          return a.compareTo(b);
+        },);
   }
 
   /// ✅ Fetch all videos for a given class + subject

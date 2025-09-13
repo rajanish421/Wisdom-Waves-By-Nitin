@@ -30,7 +30,8 @@ class _ResourceScreenState extends State<ResourceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("${widget.className}"),
+        title: Text("${widget.className}th - ${widget.subjectName}"),
+        centerTitle: true,
       ),
       body: Column(
         children: [

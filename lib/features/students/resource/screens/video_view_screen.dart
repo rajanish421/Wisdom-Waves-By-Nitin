@@ -111,7 +111,7 @@ class _VideoLibraryScreenState extends State<VideoLibraryScreen> {
                   child: Center(child: Text("Download a video to play")),
                 ),
 
-              Expanded(
+              videos.length == 0?Text("No Video found"):Expanded(
                 child: ListView.builder(
                   itemCount: videos.length,
                   itemBuilder: (context, index) {

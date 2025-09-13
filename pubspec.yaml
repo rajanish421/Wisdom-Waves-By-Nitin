@@ -70,8 +70,10 @@ flutter_launcher_icons:
   android: "ic_launcher"
   ios: true
   image_path: "assets/icons/logo.png"
-  adaptive_icon_foreground: "assets/icons/logo.png"  # your circular logo
-  adaptive_icon_background: "assets/icons/logo.png"
+  adaptive_icon_background: "#FFFFFF"   # or transparent, depends on your style
+  adaptive_icon_foreground: "assets/icons/logo.png"
+#  adaptive_icon_foreground: "assets/icons/logo.png"  # your circular logo
+#  adaptive_icon_background: "assets/icons/logo.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

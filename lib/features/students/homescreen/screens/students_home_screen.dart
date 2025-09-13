@@ -32,80 +32,75 @@ class StudentHomeScreen extends StatelessWidget {
     print(student);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0).copyWith(top: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                childAspectRatio: 4 / 4,
-                children: [
-                  GestureDetector(
-                    child: FeatureCard(icon: Icons.assignment, title: "Test"),
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => MainScreen(),));
-                    },
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => StudentFeeDashboard(userId: student.userId,),));
-                    },
-                    child: FeatureCard(icon: Icons.attach_money, title: "Fees"),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => StudentAttendanceDashboard(student: student,),));
-                    },
-                    child: FeatureCard(
-                      icon: Icons.check_circle,
-                      title: "Attendance",
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => AssignmentHomeScreen(),));
-
-                    },
-                    child: FeatureCard(
-                      icon: Icons.assignment_turned_in,
-                      title: "Assignment",
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => DownloadHomeScreen(),));
-
-                    },
-                    child: FeatureCard(
-                      icon: Icons.download,
-                      title: "Downloads",
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ClassSelectionScreen(),));
-
-                    },
-                    child: FeatureCard(icon: Icons.folder, title: "Resource"),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => AnnouncementHomeScreen(),));
-
-                    },
-                    child: FeatureCard(
-                      icon: Icons.campaign,
-                      title: "Announcements",
-                    ),
-                  ),
-                ],
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: GridView.count(
+            crossAxisCount: 2,
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+            childAspectRatio: 4 / 4,
+            children: [
+              GestureDetector(
+                child: FeatureCard(icon: Icons.assignment, title: "Test"),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => MainScreen(),));
+                },
               ),
-            ),
-          ],
+              GestureDetector(
+                onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => StudentFeeDashboard(userId: student.userId,),));
+                },
+                child: FeatureCard(icon: Icons.attach_money, title: "Fees"),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => StudentAttendanceDashboard(student: student,),));
+                },
+                child: FeatureCard(
+                  icon: Icons.check_circle,
+                  title: "Attendance",
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => AssignmentHomeScreen(),));
+
+                },
+                child: FeatureCard(
+                  icon: Icons.assignment_turned_in,
+                  title: "Assignment",
+                ),
+              ),
+              // GestureDetector(
+              //   onTap: () {
+              //     Navigator.push(context, MaterialPageRoute(builder: (context) => DownloadHomeScreen(),));
+              //
+              //   },
+              //   child: FeatureCard(
+              //     icon: Icons.download,
+              //     title: "Downloads",
+              //   ),
+              // ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ClassSelectionScreen(),));
+
+                },
+                child: FeatureCard(icon: Icons.folder, title: "Resource"),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => AnnouncementHomeScreen(),));
+
+                },
+                child: FeatureCard(
+                  icon: Icons.campaign,
+                  title: "Announcements",
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
