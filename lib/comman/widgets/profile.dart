@@ -2,33 +2,38 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:wisdom_waves_by_nitin/Model/students_model.dart';
+import 'package:wisdom_waves_by_nitin/comman/widgets/fullScreen_image.dart';
 import 'package:wisdom_waves_by_nitin/comman/widgets/profile_services.dart';
 
 import '../../features/students/auth/screens/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final Students student;
-   ProfileScreen({super.key,required this.student});
+
+  ProfileScreen({super.key, required this.student});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  // String url = "";
   ProfileUpdate profileUpdate = ProfileUpdate();
-  late final ValueNotifier<String> profileUrl ;
+  // late final ValueNotifier<String> profileUrl;
 
   @override
   void initState() {
     super.initState();
-    profileUrl = ValueNotifier(widget.student.profile_url.toString());
   }
 
-  void updatePic()async{
-    print("hello");
-    await profileUpdate.updateProfilePic(widget.student.userId, context, "dosossycv", "wisdom_waves");
-    final res = await FirebaseFirestore.instance.collection("students").doc(widget.student.userId).get();
-    profileUrl.value = res.data()!['profile_url'];
+
+  void updatePic() async {
+    await profileUpdate.updateProfilePic(
+      widget.student.userId,
+      context,
+      "dosossycv",
+      "wisdom_waves",
+    );
   }
 
   @override
@@ -50,40 +55,75 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 30),
-              Stack(
-                children: [
-                  ValueListenableBuilder<String>(
-                    valueListenable: profileUrl,
-                    builder: (context, value, _) {
-                      return CircleAvatar(
-                        radius: 65,
-                        backgroundImage: value.isEmpty
-                            ? const AssetImage("assets/images/profile_default.png")
-                            : NetworkImage(value) as ImageProvider,
-                      );
-                    },
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: InkWell(
-                      onTap: () {
-                        updatePic();
+                Stack(
+                  children: [
+                    StreamBuilder(
+                      stream: FirebaseFirestore.instance.collection("students").doc(widget.student.userId).snapshots(), // pass student id
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const CircleAvatar(
+                            radius: 65,
+                            backgroundColor: Colors.grey,
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+
+                        if (!snapshot.hasData || !snapshot.data!.exists) {
+                          return const CircleAvatar(
+                            radius: 65,
+                            backgroundImage: AssetImage("assets/images/profile_default.png"),
+                          );
+                        }
+                        // Get profile_url
+                        final data = snapshot.data!.data();
+                        final profileUrl = data?['profile_url'] ?? "";
+
+                        return GestureDetector(
+                          onTap: () {
+                            if(profileUrl.toString().isEmpty){
+                              return;
+                            }
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FullImage(imageUrl: profileUrl),
+                              ),
+                            );
+                          },
+                          child: CircleAvatar(
+                            radius: 65,
+                            backgroundImage: profileUrl.isEmpty
+                                ? const AssetImage("assets/images/profile_default.png")
+                                : NetworkImage(profileUrl) as ImageProvider,
+                          ),
+                        );
                       },
-                      child: Container(
-                        height: 35,
-                        width: 35,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: Colors.white,
+                    ),
+
+                    // Edit Button
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: InkWell(
+                        onTap: updatePic,
+                        child: Container(
+                          height: 35,
+                          width: 35,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            color: Colors.white,
+                          ),
+                          child: const Icon(
+                            Icons.edit,
+                            color: Colors.grey,
+                            size: 30,
+                          ),
                         ),
-                        child: const Icon(Icons.edit, color: Colors.grey, size: 30),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
+                  ],
+                ),
+                const SizedBox(height: 10),
                 Text(
                   widget.student.name,
                   style: TextStyle(
@@ -94,14 +134,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 Text(
                   "WW${widget.student.userId}",
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(color: Colors.white70, fontSize: 14),
                 ),
                 const SizedBox(height: 5),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white24,
                     borderRadius: BorderRadius.circular(20),
@@ -120,16 +160,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                _buildProfileTile(Icons.phone, 'Phone', widget.student.contact_number.toString()),
-                _buildProfileTile(Icons.person, 'Father', widget.student.father_name),
-                _buildProfileTile(Icons.woman, 'Mother', widget.student.mother_name,),
-                _buildProfileTile(Icons.school, 'School', widget.student.school_name),
+                _buildProfileTile(
+                  Icons.phone,
+                  'Phone',
+                  widget.student.contact_number.toString(),
+                ),
+                _buildProfileTile(
+                  Icons.person,
+                  'Father',
+                  widget.student.father_name,
+                ),
+                _buildProfileTile(
+                  Icons.woman,
+                  'Mother',
+                  widget.student.mother_name,
+                ),
+                _buildProfileTile(
+                  Icons.school,
+                  'School',
+                  widget.student.school_name,
+                ),
                 _buildProfileTile(Icons.group, 'Batch', widget.student.batch),
-                _buildProfileTile(Icons.language, 'Medium', widget.student.medium),
-                _buildProfileTile(Icons.calendar_today, 'Age', widget.student.age.toString()),
-                _buildProfileTile(Icons.person, 'Gender', widget.student.gender),
-                _buildProfileTile(Icons.location_on, 'Address', widget.student.address),
-
+                _buildProfileTile(
+                  Icons.language,
+                  'Medium',
+                  widget.student.medium,
+                ),
+                _buildProfileTile(
+                  Icons.calendar_today,
+                  'Age',
+                  widget.student.age.toString(),
+                ),
+                _buildProfileTile(
+                  Icons.person,
+                  'Gender',
+                  widget.student.gender,
+                ),
+                _buildProfileTile(
+                  Icons.location_on,
+                  'Address',
+                  widget.student.address,
+                ),
 
                 const Divider(),
                 ListTile(
@@ -150,7 +221,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   title: const Text('Logout'),
                   onTap: () {
                     FirebaseAuth.instance.signOut();
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                    );
                   },
                 ),
               ],
