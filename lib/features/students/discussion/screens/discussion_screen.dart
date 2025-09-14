@@ -189,92 +189,103 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       // appBar: AppBar(title: const Text('Community Discussion')),
-      body: Column(
-        children: [
-          Expanded(
-            child: StreamBuilder<List<DiscussionMessage>>(
-              stream: _repo.messagesStream(limit: 500),
-              builder: (context, snap) {
-                if (!snap.hasData)
-                  return const Center(child: CircularProgressIndicator());
-                final messages = snap.data!;
-                return ListView.builder(
-                  controller: _scrollController,
-                  itemCount: messages.length,
-                  itemBuilder: (_, i) {
-                    final m = messages[i];
-                    final isMe = m.senderId == widget.student.userId;
-                    return InkWell(
-                      onLongPress: isMe == true ? () {
-                        // print(m.senderId);
-                        showDialog(
-                          context: context,
-                          builder:
-                              (context) => AlertDialog(
-                                actionsAlignment: MainAxisAlignment.spaceBetween,
-                                alignment: Alignment.center,
-                                title: Text("Delete"),
-                                actions: [
-                                  TextButton(onPressed:(){
-                                    if(m.imageUrl != null){
-                                      _repo.deleteImageFromFirestoreAndCloudinary(docId: m.id.toString(), imageUrl: m.imageUrl.toString());
-                                    }else if (m.text != null){
-                                      _repo.deleteMessage(m.id.toString());
-                                    }
-                                    Navigator.pop(context);
-                                  }, child: Text("delete")),
-                                  TextButton(onPressed: (){
-                                    Navigator.pop(context);
-                                  }, child: Text("cancel")),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Expanded(
+              child: StreamBuilder<List<DiscussionMessage>>(
+                stream: _repo.messagesStream(limit: 500),
+                builder: (context, snap) {
+                  if (!snap.hasData)
+                    return const Center(child: CircularProgressIndicator());
+                  final messages = snap.data!;
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (_scrollController.hasClients) {
+                      _scrollController.jumpTo(
+                        _scrollController.position.maxScrollExtent,
+                      );
+                    }
+                  });
+                  return ListView.builder(
+                    controller: _scrollController,
+                    itemCount: messages.length,
+                    // reverse: true,
+                    itemBuilder: (_, i) {
+                      final m = messages[i];
+                      final isMe = m.senderId == widget.student.userId;
+                      return InkWell(
+                        onLongPress: isMe == true ? () {
+                          // print(m.senderId);
+                          showDialog(
+                            context: context,
+                            builder:
+                                (context) => AlertDialog(
+                                  actionsAlignment: MainAxisAlignment.spaceBetween,
+                                  alignment: Alignment.center,
+                                  title: Text("Delete"),
+                                  actions: [
+                                    TextButton(onPressed:(){
+                                      if(m.imageUrl != null){
+                                        _repo.deleteImageFromFirestoreAndCloudinary(docId: m.id.toString(), imageUrl: m.imageUrl.toString());
+                                      }else if (m.text != null){
+                                        _repo.deleteMessage(m.id.toString());
+                                      }
+                                      Navigator.pop(context);
+                                    }, child: Text("delete")),
+                                    TextButton(onPressed: (){
+                                      Navigator.pop(context);
+                                    }, child: Text("cancel")),
 
-                                ],
-                              ),
-                        );
-                      }:null,
-                      child: MessageTile(message: m, isMe: isMe),
-                    );
-                  },
-                );
-              },
+                                  ],
+                                ),
+                          );
+                        }:null,
+                        child: MessageTile(message: m, isMe: isMe),
+                      );
+                    },
+                  );
+                },
+              ),
             ),
-          ),
-          SafeArea(
-            top: false,
-            child: Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.image),
-                  onPressed: _sendImage,
-                ),
-                // IconButton(
-                //   icon: Icon(_isRecording ? Icons.mic_off : Icons.mic,
-                //       color: _isRecording ? Colors.red : Colors.deepPurple),
-                //   onPressed: _toggleRecording,
-                // ),
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    child: TextField(
-                      controller: _textController,
-                      minLines: 1,
-                      maxLines: 5,
-                      onSubmitted: (_) => _sendText(),
-                      decoration: InputDecoration(
-                        hintText: "Type a message",
-                        border: InputBorder.none,
+            SafeArea(
+              top: false,
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.image),
+                    onPressed: _sendImage,
+                  ),
+                  // IconButton(
+                  //   icon: Icon(_isRecording ? Icons.mic_off : Icons.mic,
+                  //       color: _isRecording ? Colors.red : Colors.deepPurple),
+                  //   onPressed: _toggleRecording,
+                  // ),
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: TextField(
+                        controller: _textController,
+                        minLines: 1,
+                        maxLines: 5,
+                        onSubmitted: (_) => _sendText(),
+                        decoration: InputDecoration(
+                          hintText: "Type a message",
+                          border: InputBorder.none,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                IconButton(icon: const Icon(Icons.send), onPressed: _sendText),
-              ],
+                  IconButton(icon: const Icon(Icons.send), onPressed: _sendText),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

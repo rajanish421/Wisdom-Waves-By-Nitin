@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../../Model/announcement_model.dart';
 import '../services/announcement_service.dart';
 import 'announcement_details_screen.dart';
-import 'create_announcement_screen.dart';
 import 'package:intl/intl.dart';
 
 class AllAnnouncementsScreen extends StatelessWidget {
@@ -14,10 +13,7 @@ class AllAnnouncementsScreen extends StatelessWidget {
       appBar: AppBar(title: const Text("All Announcements")),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (_) => CreateAnnouncementScreen()),
-          // );
+
         },
         child: const Icon(Icons.add),
       ),

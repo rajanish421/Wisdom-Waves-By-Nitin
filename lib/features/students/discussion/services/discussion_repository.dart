@@ -25,8 +25,18 @@ class DiscussionRepository {
     await _col.doc(id).delete();
   }
 
-
-
+  Stream<DateTime?> latestMessageStream() {
+    return _col
+        .orderBy('timestamp', descending: true)
+        .limit(1)
+        .snapshots()
+        .map((snap) {
+      if (snap.docs.isEmpty) return null;
+      final data = snap.docs.first.data();
+      final ts = data['timestamp'] as Timestamp?;
+      return ts?.toDate();
+    });
+  }
 
   Future<void> deleteImageFromFirestoreAndCloudinary({
     required String docId,

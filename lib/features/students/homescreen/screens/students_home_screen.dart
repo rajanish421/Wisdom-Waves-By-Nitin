@@ -7,14 +7,22 @@ import 'package:wisdom_waves_by_nitin/features/students/download/screens/downloa
 import 'package:wisdom_waves_by_nitin/features/students/homescreen/widgets/feature_card.dart';
 import 'package:wisdom_waves_by_nitin/features/students/resource/screens/resource_home_screen.dart';
 import 'package:wisdom_waves_by_nitin/features/students/test/screens/main_screen.dart';
-
+import 'package:badges/badges.dart' as badges;
+import '../../../../utills/local_storage.dart';
 import '../../announcement/screens/all_announcements_screen.dart';
+import '../../announcement/services/announcement_service.dart';
 import '../../fee/screens/fee_screen.dart';
 
-class StudentHomeScreen extends StatelessWidget {
+class StudentHomeScreen extends StatefulWidget {
   final Students student;
-  const StudentHomeScreen({super.key,required this.student});
 
+  const StudentHomeScreen({super.key, required this.student});
+
+  @override
+  State<StudentHomeScreen> createState() => _StudentHomeScreenState();
+}
+
+class _StudentHomeScreenState extends State<StudentHomeScreen> {
   /// Feature items list
   List<Map<String, dynamic>> get _featureItems => [
     {'title': 'Tests', 'icon': Icons.assignment},
@@ -27,9 +35,30 @@ class StudentHomeScreen extends StatelessWidget {
     {'title': 'Announcements', 'icon': Icons.campaign},
   ];
 
+  final service = AnnouncementService();
+  int badgeCount = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _listenToAnnouncements();
+  }
+
+  void _listenToAnnouncements() async {
+    final lastSeen = await LocalStorage.getLastSeen();
+
+    service.getAnnouncements().listen((announcements) {
+      final total = announcements.length;
+      setState(() {
+        badgeCount = total - lastSeen;
+        if (badgeCount < 0) badgeCount = 0;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    print(student);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
@@ -44,18 +73,37 @@ class StudentHomeScreen extends StatelessWidget {
               GestureDetector(
                 child: FeatureCard(icon: Icons.assignment, title: "Test"),
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => MainScreen(),));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MainScreen()),
+                  );
                 },
               ),
               GestureDetector(
                 onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => StudentFeeDashboard(userId: student.userId,),));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => StudentFeeDashboard(
+                            userId: widget.student.userId,
+                          ),
+                    ),
+                  );
                 },
                 child: FeatureCard(icon: Icons.attach_money, title: "Fees"),
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => StudentAttendanceDashboard(student: student,),));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => StudentAttendanceDashboard(
+                            student: widget.student,
+                          ),
+                    ),
+                  );
                 },
                 child: FeatureCard(
                   icon: Icons.check_circle,
@@ -64,8 +112,12 @@ class StudentHomeScreen extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => AssignmentHomeScreen(),));
-
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AssignmentHomeScreen(),
+                    ),
+                  );
                 },
                 child: FeatureCard(
                   icon: Icons.assignment_turned_in,
@@ -84,19 +136,58 @@ class StudentHomeScreen extends StatelessWidget {
               // ),
               GestureDetector(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ClassSelectionScreen(),));
-
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ClassSelectionScreen(),
+                    ),
+                  );
                 },
                 child: FeatureCard(icon: Icons.folder, title: "Resource"),
               ),
               GestureDetector(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => AllAnnouncementsScreen(),));
+                onTap: () async {
+                  // Jab student announcements screen kholta hai -> lastSeen update
+                  final totalAnnouncements =
+                      await service.getAnnouncements().first;
+                  await LocalStorage.setLastSeen(totalAnnouncements.length);
 
+                  // Badge reset
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AllAnnouncementsScreen(),
+                    ),
+                  );
+                  setState(() {
+                    badgeCount = 0;
+                  });
                 },
-                child: FeatureCard(
-                  icon: Icons.campaign,
-                  title: "Announcements",
+                child: badges.Badge(
+                  showBadge: badgeCount > 0,
+                  badgeAnimation: badges.BadgeAnimation.slide(), // smooth slide effect
+                  position: badges.BadgePosition.topEnd(top: 0, end: 12), // better alignment
+                  stackFit: StackFit.passthrough,
+                  badgeStyle: badges.BadgeStyle(
+                    shape: badges.BadgeShape.circle,
+                    badgeColor: Colors.redAccent, // stylish color
+                    padding: const EdgeInsets.all(10), // compact padding
+                    elevation: 4, // little shadow for depth
+                    borderSide: const BorderSide(color: Colors.white, width: 1.5), // white border for clarity
+                  ),
+                  badgeContent: Text(
+                    badgeCount.toString(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 28, // smaller text for balance
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  child: FeatureCard(
+                    icon: Icons.campaign,
+                    title: "Announcements",
+                  ),
                 ),
               ),
             ],
