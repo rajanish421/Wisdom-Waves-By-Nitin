@@ -23,6 +23,7 @@ class DiscussionMessage {
 
   Map<String, dynamic> toFirestoreMap() {
     return {
+      'id':id,
       'senderId': senderId,
       'senderName': senderName,
       'text': text,
@@ -49,7 +50,7 @@ class DiscussionMessage {
     final data = doc.data() as Map<String, dynamic>;
     final ts = data['timestamp'] as Timestamp?;
     return DiscussionMessage(
-      id: doc.id,
+      id: data['id'],
       senderId: data['senderId'] ?? '',
       senderName: data['senderName'] ?? '',
       text: data['text'] as String?,

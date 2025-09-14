@@ -14,7 +14,8 @@ import 'package:file_picker/file_picker.dart';
 
 class DiscussionScreen extends StatefulWidget {
   final Students student;
-  const DiscussionScreen({super.key , required this.student});
+
+  const DiscussionScreen({super.key, required this.student});
 
   @override
   State<DiscussionScreen> createState() => _DiscussionScreenState();
@@ -22,7 +23,7 @@ class DiscussionScreen extends StatefulWidget {
 
 class _DiscussionScreenState extends State<DiscussionScreen> {
   final _repo = DiscussionRepository();
-  final _cloudinary = CloudinaryService(
+  final _cloudinary = CloudinaryServiceForChatting(
     cloudName: 'dosossycv',
     uploadPreset: 'wisdom_waves',
   );
@@ -30,10 +31,12 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
   final _textController = TextEditingController();
   final _scrollController = ScrollController();
   final _picker = ImagePicker();
+
   // final _recorder = AudioRecorder();
   // final _audioPlayer = AudioPlayer();
 
   bool _isSending = false;
+
   // bool _isRecording = false;
 
   @override
@@ -42,36 +45,24 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
     // _initUser();
   }
 
-  // Future<void> _initUser() async {
-  //   final user = FirebaseAuth.instance.currentUser;
-  //   if (user != null) {
-  //     userId = user.uid;
-  //     _name = user.displayName ?? 'User-${user.uid.substring(0, 6)}';
-  //   } else {
-  //     final cred = await FirebaseAuth.instance.signInAnonymously();
-  //     _uid = cred.user!.uid;
-  //     _name = 'User-${_uid.substring(0, 6)}';
-  //   }
-  //   setState(() {});
-  // }
 
   Future<void> _sendText() async {
     final text = _textController.text.trim();
     if (text.isEmpty || _isSending) return;
     _isSending = true;
-
+    final String id = DateTime.now().microsecondsSinceEpoch.toString();
     final msg = DiscussionMessage(
+      id: id,
       senderId: widget.student.userId,
       senderName: widget.student.name,
       text: text,
       timestamp: DateTime.now(),
     );
-    await _repo.sendMessage(msg);
+    await _repo.sendMessage(msg,id);
     _textController.clear();
     _scrollToBottom();
     _isSending = false;
   }
-
 
   Future<void> _sendImage() async {
     // final ImagePicker _picker = ImagePicker();
@@ -82,41 +73,55 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (_) => Container(
-        padding: EdgeInsets.all(20),
-        height: 230,
-        child: Column(
-          children: [
-            Text("Select Image", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      builder:
+          (_) => Container(
+            padding: EdgeInsets.all(20),
+            height: 230,
+            child: Column(
               children: [
-                // Camera option
-                Column(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.camera_alt, size: 40,color: AppColors.appBarColor,),
-                      onPressed: () => Navigator.pop(context, ImageSource.camera),
-                    ),
-                    Text("Camera")
-                  ],
+                Text(
+                  "Select Image",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                // Gallery option
-                Column(
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    IconButton(
-                      icon: Icon(Icons.photo, size: 40,color: AppColors.appBarColor),
-                      onPressed: () => Navigator.pop(context, ImageSource.gallery),
+                    // Camera option
+                    Column(
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            Icons.camera_alt,
+                            size: 40,
+                            color: AppColors.appBarColor,
+                          ),
+                          onPressed:
+                              () => Navigator.pop(context, ImageSource.camera),
+                        ),
+                        Text("Camera"),
+                      ],
                     ),
-                    Text("Gallery")
+                    // Gallery option
+                    Column(
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            Icons.photo,
+                            size: 40,
+                            color: AppColors.appBarColor,
+                          ),
+                          onPressed:
+                              () => Navigator.pop(context, ImageSource.gallery),
+                        ),
+                        Text("Gallery"),
+                      ],
+                    ),
                   ],
                 ),
               ],
             ),
-          ],
-        ),
-      ),
+          ),
     );
 
     if (source == null) return; // User canceled
@@ -126,19 +131,18 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
 
     final url = await _cloudinary.uploadImage(File(xfile.path));
     if (url == null) return;
-
+    final String id = DateTime.now().microsecondsSinceEpoch.toString();
     final msg = DiscussionMessage(
+      id: id,
       senderId: widget.student.userId,
       senderName: widget.student.name,
       imageUrl: url,
       timestamp: DateTime.now(),
     );
 
-    await _repo.sendMessage(msg);
+    await _repo.sendMessage(msg,id);
     _scrollToBottom();
   }
-
-
 
   // Future<void> _toggleRecording() async {
   //   if (_isRecording) {
@@ -191,7 +195,8 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
             child: StreamBuilder<List<DiscussionMessage>>(
               stream: _repo.messagesStream(limit: 500),
               builder: (context, snap) {
-                if (!snap.hasData) return const Center(child: CircularProgressIndicator());
+                if (!snap.hasData)
+                  return const Center(child: CircularProgressIndicator());
                 final messages = snap.data!;
                 return ListView.builder(
                   controller: _scrollController,
@@ -199,7 +204,35 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
                   itemBuilder: (_, i) {
                     final m = messages[i];
                     final isMe = m.senderId == widget.student.userId;
-                    return MessageTile(message: m, isMe: isMe);
+                    return InkWell(
+                      onLongPress: isMe == true ? () {
+                        // print(m.senderId);
+                        showDialog(
+                          context: context,
+                          builder:
+                              (context) => AlertDialog(
+                                actionsAlignment: MainAxisAlignment.spaceBetween,
+                                alignment: Alignment.center,
+                                title: Text("Delete"),
+                                actions: [
+                                  TextButton(onPressed:(){
+                                    if(m.imageUrl != null){
+                                      _repo.deleteImageFromFirestoreAndCloudinary(docId: m.id.toString(), imageUrl: m.imageUrl.toString());
+                                    }else if (m.text != null){
+                                      _repo.deleteMessage(m.id.toString());
+                                    }
+                                    Navigator.pop(context);
+                                  }, child: Text("delete")),
+                                  TextButton(onPressed: (){
+                                    Navigator.pop(context);
+                                  }, child: Text("cancel")),
+
+                                ],
+                              ),
+                        );
+                      }:null,
+                      child: MessageTile(message: m, isMe: isMe),
+                    );
                   },
                 );
               },
@@ -209,7 +242,10 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
             top: false,
             child: Row(
               children: [
-                IconButton(icon: const Icon(Icons.image), onPressed: _sendImage),
+                IconButton(
+                  icon: const Icon(Icons.image),
+                  onPressed: _sendImage,
+                ),
                 // IconButton(
                 //   icon: Icon(_isRecording ? Icons.mic_off : Icons.mic,
                 //       color: _isRecording ? Colors.red : Colors.deepPurple),

@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 
-class CloudinaryService {
+class CloudinaryServiceForChatting {
   final String cloudName;
   final String uploadPreset;
   final String folder; // optional folder in your Cloudinary account
 
-  CloudinaryService({
+  CloudinaryServiceForChatting({
     required this.cloudName,
     required this.uploadPreset,
     this.folder = 'coaching_discussion',

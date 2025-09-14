@@ -14,7 +14,7 @@ class ProfileUpdate{
 
   Future<void> updateProfilePic(String userId,BuildContext context,String cloudName ,String uploadPreset )async{
     try{
-      CloudinaryService _cloudinary = CloudinaryService(cloudName: cloudName, uploadPreset: uploadPreset ,folder: "Profile Images");
+      CloudinaryServiceForChatting _cloudinary = CloudinaryServiceForChatting(cloudName: cloudName, uploadPreset: uploadPreset ,folder: "Profile Images");
       // Show a bottom sheet to let user choose Camera or Gallery
       final ImageSource? source = await showModalBottomSheet<ImageSource>(
         context: context,
