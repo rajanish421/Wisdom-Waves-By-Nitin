@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:intl/intl.dart';
+import 'package:wisdom_waves_by_nitin/comman/widgets/fullScreen_image.dart';
 
 import '../../../../Model/discussion_model.dart';
 
@@ -57,15 +58,21 @@ class MessageTile extends StatelessWidget {
               if (message.imageUrl != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      message.imageUrl!,
-                      width: 200,
-                      height: 140,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) =>
-                      const Icon(Icons.broken_image, size: 40),
+                  child: GestureDetector(
+                    onTap: (){
+                      // print("ji");
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => FullImage(imageUrl: message.imageUrl.toString()),));
+                      },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        message.imageUrl!,
+                        width: 200,
+                        height: 140,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) =>
+                        const Icon(Icons.broken_image, size: 40),
+                      ),
                     ),
                   ),
                 ),
