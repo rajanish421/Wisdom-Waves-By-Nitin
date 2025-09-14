@@ -27,7 +27,7 @@ class _ContactScreenState extends State<ContactScreen> {
   final String facebook = "https://facebook.com/yourpage";
   final String youtube = "https://youtube.com/@wisdomwavesbynitin";
   final String mobile = "7081333178";
-  final String whatsapp = "918830387561";
+  final String whatsapp = "917081333178";
  // ✅ must include country code
    MessageServices messageServices = MessageServices();
   TextEditingController nameController = TextEditingController();

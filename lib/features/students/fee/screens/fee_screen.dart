@@ -104,8 +104,9 @@ class StudentFeeDashboard extends StatelessWidget {
                         itemCount: snapData.length,
                         itemBuilder: (context, index) {
                           final data = FeeMonth.fromMap(snapData[index].data());
+                          print(data.year);
                           String monthName =
-                              "${monthList[data.month]} - ${monthList[data.year]}"
+                              "${monthList[data.month]} - ${data.year}"
                                   .toString();
                           return Card(
                             color: Colors.white,
