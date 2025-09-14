@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wisdom_waves_by_nitin/Model/students_model.dart';
 import 'package:wisdom_waves_by_nitin/constant/app_colors.dart';
-import 'package:wisdom_waves_by_nitin/features/students/announcement/screens/announcement_home_screen.dart';
 import 'package:wisdom_waves_by_nitin/features/students/assignment/screens/assignment_home_screen.dart';
 import 'package:wisdom_waves_by_nitin/features/students/attendence/screens/attendence_home_screen.dart';
 import 'package:wisdom_waves_by_nitin/features/students/download/screens/download_home_screen.dart';
@@ -9,6 +8,7 @@ import 'package:wisdom_waves_by_nitin/features/students/homescreen/widgets/featu
 import 'package:wisdom_waves_by_nitin/features/students/resource/screens/resource_home_screen.dart';
 import 'package:wisdom_waves_by_nitin/features/students/test/screens/main_screen.dart';
 
+import '../../announcement/screens/all_announcements_screen.dart';
 import '../../fee/screens/fee_screen.dart';
 
 class StudentHomeScreen extends StatelessWidget {
@@ -91,7 +91,7 @@ class StudentHomeScreen extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => AnnouncementHomeScreen(),));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => AllAnnouncementsScreen(),));
 
                 },
                 child: FeatureCard(
