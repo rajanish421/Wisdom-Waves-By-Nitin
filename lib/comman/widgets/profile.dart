@@ -1,12 +1,35 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:wisdom_waves_by_nitin/Model/students_model.dart';
+import 'package:wisdom_waves_by_nitin/comman/widgets/profile_services.dart';
 
 import '../../features/students/auth/screens/login_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   final Students student;
-  const ProfileScreen({super.key,required this.student});
+   ProfileScreen({super.key,required this.student});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  ProfileUpdate profileUpdate = ProfileUpdate();
+  late final ValueNotifier<String> profileUrl ;
+
+  @override
+  void initState() {
+    super.initState();
+    profileUrl = ValueNotifier(widget.student.profile_url.toString());
+  }
+
+  void updatePic()async{
+    print("hello");
+    await profileUpdate.updateProfilePic(widget.student.userId, context, "dosossycv", "wisdom_waves");
+    final res = await FirebaseFirestore.instance.collection("students").doc(widget.student.userId).get();
+    profileUrl.value = res.data()!['profile_url'];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +49,43 @@ class ProfileScreen extends StatelessWidget {
             ),
             child: Column(
               children: [
-                const SizedBox(height: 20),
-                CircleAvatar(
-                  radius: 45,
-                  backgroundImage:AssetImage('assets/images/profile_default.png'), // Your profile image
-                ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 30),
+              Stack(
+                children: [
+                  ValueListenableBuilder<String>(
+                    valueListenable: profileUrl,
+                    builder: (context, value, _) {
+                      return CircleAvatar(
+                        radius: 65,
+                        backgroundImage: value.isEmpty
+                            ? const AssetImage("assets/images/profile_default.png")
+                            : NetworkImage(value) as ImageProvider,
+                      );
+                    },
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: InkWell(
+                      onTap: () {
+                        updatePic();
+                      },
+                      child: Container(
+                        height: 35,
+                        width: 35,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: Colors.white,
+                        ),
+                        child: const Icon(Icons.edit, color: Colors.grey, size: 30),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
                 Text(
-                  student.name,
+                  widget.student.name,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20,
@@ -41,7 +93,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "WW${student.userId}",
+                  "WW${widget.student.userId}",
                   style: TextStyle(
                     color: Colors.white70,
                     fontSize: 14,
@@ -55,7 +107,7 @@ class ProfileScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    "class - ${student.std}",
+                    "class - ${widget.student.std}",
                     style: TextStyle(color: Colors.white, fontSize: 13),
                   ),
                 ),
@@ -68,15 +120,15 @@ class ProfileScreen extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                _buildProfileTile(Icons.phone, 'Phone', student.contact_number.toString()),
-                _buildProfileTile(Icons.person, 'Father', student.father_name),
-                _buildProfileTile(Icons.woman, 'Mother', student.mother_name,),
-                _buildProfileTile(Icons.school, 'School', student.school_name),
-                _buildProfileTile(Icons.group, 'Batch', student.batch),
-                _buildProfileTile(Icons.language, 'Medium', student.medium),
-                _buildProfileTile(Icons.calendar_today, 'Age', student.age.toString()),
-                _buildProfileTile(Icons.person, 'Gender', student.gender),
-                _buildProfileTile(Icons.location_on, 'Address', student.address),
+                _buildProfileTile(Icons.phone, 'Phone', widget.student.contact_number.toString()),
+                _buildProfileTile(Icons.person, 'Father', widget.student.father_name),
+                _buildProfileTile(Icons.woman, 'Mother', widget.student.mother_name,),
+                _buildProfileTile(Icons.school, 'School', widget.student.school_name),
+                _buildProfileTile(Icons.group, 'Batch', widget.student.batch),
+                _buildProfileTile(Icons.language, 'Medium', widget.student.medium),
+                _buildProfileTile(Icons.calendar_today, 'Age', widget.student.age.toString()),
+                _buildProfileTile(Icons.person, 'Gender', widget.student.gender),
+                _buildProfileTile(Icons.location_on, 'Address', widget.student.address),
 
 
                 const Divider(),

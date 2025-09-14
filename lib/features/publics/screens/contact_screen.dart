@@ -12,16 +12,27 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wisdom_waves_by_nitin/Custom_Widget/button.dart';
 import 'package:wisdom_waves_by_nitin/constant/app_colors.dart';
+import 'package:wisdom_waves_by_nitin/features/publics/services/message_services.dart';
 
-class ContactScreen extends StatelessWidget {
-  const ContactScreen({super.key});
+class ContactScreen extends StatefulWidget {
+   ContactScreen({super.key});
 
+  @override
+  State<ContactScreen> createState() => _ContactScreenState();
+}
+
+class _ContactScreenState extends State<ContactScreen> {
   final String email = "wisdomwaves28091907@gmail.com";
   final String instagram = "https://www.instagram.com/wisdom_wavesofficial2005";
   final String facebook = "https://facebook.com/yourpage";
   final String youtube = "https://youtube.com/@wisdomwavesbynitin";
   final String mobile = "7081333178";
-  final String whatsapp = "918830387561"; // ✅ must include country code
+  final String whatsapp = "918830387561";
+ // ✅ must include country code
+   MessageServices messageServices = MessageServices();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController messageController = TextEditingController();
+  bool isLoading = false;
 
   Future<void> _launchUrl(String url) async {
     final Uri uri = Uri.parse(url);
@@ -31,6 +42,7 @@ class ContactScreen extends StatelessWidget {
   }
 
   Future<void> _openWhatsApp(String phone, String message) async {
+
     final encodedMessage = Uri.encodeComponent(message);
     final url = "https://wa.me/$phone?text=$encodedMessage";
     await _launchUrl(url);
@@ -41,6 +53,29 @@ class ContactScreen extends StatelessWidget {
       "I am interested in taking admission at your institute."
       "Please share the admission process, fee structure, and available courses."
       "Thank you.";
+
+  final String mapUrl = "https://maps.google.com/?q=Wisdom Waves Coaching";
+
+  void send()async{
+    setState(() {
+      isLoading = true;
+    });
+    await messageServices.sendMessage(nameController.text, messageController.text, context);
+    setState(() {
+      isLoading = false;
+      nameController.clear();
+      messageController.clear();
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    nameController.dispose();
+    messageController.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -94,9 +129,9 @@ class ContactScreen extends StatelessWidget {
               contactAction(
                 icon: Icons.location_on,
                 title: "Visit Us",
-                subtitle: "Sapaha Road, Near Central Bank, Kushinagar UP , Wisdom Waves",
+                subtitle: "Sapaha , Sekhwaniya road , in front of Central Bank.",
                 color: Colors.blue,
-                onTap: () => _launchUrl("https://maps.google.com/?q=Wisdom Waves Coaching"),
+                onTap: () => _launchUrl(mapUrl),
               ),
 
               const SizedBox(height: 25),
@@ -125,14 +160,13 @@ class ContactScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 15),
-              textField("Your Name"),
+              textField(nameController,"Your Name"),
               const SizedBox(height: 12),
-              textField("Your Roll No."),
-              const SizedBox(height: 12),
-              textField("Type your message...", maxLines: 4),
+              textField(messageController,"Type your message...", maxLines: 4),
               const SizedBox(height: 15),
-              CustomButton(text: "submit", onPressed: (){
+              CustomButton(isLoading: isLoading,text: "submit", onPressed: (){
                 // logic for ending message
+                send();
               }),
             ],
           ),
@@ -178,8 +212,9 @@ class ContactScreen extends StatelessWidget {
     );
   }
 
-  Widget textField(String hint, {int maxLines = 1}) {
+  Widget textField(TextEditingController controller,String hint, {int maxLines = 1} ) {
     return TextField(
+      controller: controller,
       maxLines: maxLines,
       decoration: InputDecoration(
         hintText: hint,

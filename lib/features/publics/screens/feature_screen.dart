@@ -8,8 +8,8 @@ class FeatureScreen extends StatelessWidget {
     final features = [
       {
         "icon": Icons.school,
-        "title": "Expert Teachers",
-        "subtitle": "10+ years of experience",
+        "title": "Dedicated Teachers",
+        "subtitle": "Young, dynamic, and committed to your success",
       },
       {
         "icon": Icons.assignment_turned_in,
@@ -48,44 +48,6 @@ class FeatureScreen extends StatelessWidget {
       },
     ];
 
-    // final features = [
-
-    //   {
-    //     "icon": Icons.show_chart,
-    //     "title": "Progress Tracking",
-    //     "subtitle": "Parents get weekly report ",
-    //   },
-    //   {
-    //     "icon": Icons.assignment,
-    //     "title": "Weekly Tests",
-    //     "subtitle": "Assessments every week ",
-    //   },
-    //   {
-    //     "icon": Icons.video_library,
-    //     "title": "Video Lectures",
-    //     "subtitle": "Recorded lessons online",
-    //   },
-    //   {
-    //     "icon": Icons.question_answer,
-    //     "title": "Discussion Classes",
-    //     "subtitle": "Ask doubts & learn better",
-    //   },
-    //   {
-    //     "icon": Icons.class_,
-    //     "title": "Special Classes",
-    //     "subtitle": "Focus on tough topics",
-    //   },
-    //   {
-    //     "icon": Icons.app_registration,
-    //     "title": "Application Support",
-    //     "subtitle": "Use app anytime, anywhere",
-    //   },
-    //   {
-    //     "icon": Icons.note_alt,
-    //     "title": "DPP (Daily Practice)",
-    //     "subtitle": "Practice questions daily",
-    //   },
-    // ];
 
     return Scaffold(
       appBar: AppBar(
@@ -126,25 +88,6 @@ class FeatureScreen extends StatelessWidget {
                   ),
                 );
               },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: ElevatedButton(
-              onPressed: () {
-                // Handle admission logic
-              },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                backgroundColor: Colors.blue.shade700,
-              ),
-              child: const Text(
-                "Take Admission",
-                style: TextStyle(fontSize: 16),
-              ),
             ),
           ),
         ],
