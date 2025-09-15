@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:record/record.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -24,8 +25,8 @@ class DiscussionScreen extends StatefulWidget {
 class _DiscussionScreenState extends State<DiscussionScreen> {
   final _repo = DiscussionRepository();
   final _cloudinary = CloudinaryServiceForChatting(
-    cloudName: 'dosossycv',
-    uploadPreset: 'wisdom_waves',
+    cloudName: dotenv.env['CLOUDINARY_CLOUD_NAME']??"",
+    uploadPreset: dotenv.env['CLOUDINARY_UPLOAD_PRESET']??"",
   );
 
   final _textController = TextEditingController();

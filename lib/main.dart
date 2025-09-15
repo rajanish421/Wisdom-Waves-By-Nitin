@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:wisdom_waves_by_nitin/comman/widgets/bottom_nav_bar.dart';
 import 'package:wisdom_waves_by_nitin/constant/app_theme.dart';
 import 'package:wisdom_waves_by_nitin/features/publics/screens/home_screen.dart';
@@ -7,10 +8,13 @@ import 'package:wisdom_waves_by_nitin/splace_screen.dart';
 
 import 'firebase_options.dart';
 void main()async {
+
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: '.env');
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(const MyApp());
 }
 

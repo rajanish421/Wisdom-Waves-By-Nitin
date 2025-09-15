@@ -70,6 +70,7 @@ dependencies:
   package_info_plus: ^9.0.0
   ota_update: ^7.0.2
   get: ^4.7.2
+  flutter_dotenv: ^6.0.0
 
 
 dev_dependencies:
@@ -107,6 +108,7 @@ flutter:
   assets:
     - assets/images/
     - assets/videos/
+    - .env
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

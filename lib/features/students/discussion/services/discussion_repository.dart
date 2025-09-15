@@ -1,41 +1,45 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../../../Model/discussion_model.dart';
 import '../../../../utills/cloudinary_helper.dart';
 import '../../../../utills/cloudinary_service.dart';
 
 class DiscussionRepository {
   final _col = FirebaseFirestore.instance.collection('discussion');
-  CloudinaryService cloudinaryService = CloudinaryService(cloudName: "dosossycv", apiKey: "219542351545111", apiSecret: "kt1637AQe1tauP1gnNP4Lqx5Fqk");
+  CloudinaryService cloudinaryService = CloudinaryService(
+    cloudName: dotenv.env['CLOUDINARY_CLOUD_NAME']??"",
+    apiKey: dotenv.env['CLOUDINARY_API_KEY']??"",
+    apiSecret:dotenv.env['CLOUDINARY_API_SECRET']??"" ,
+  );
 
   Stream<List<DiscussionMessage>> messagesStream({int limit = 500}) {
     return _col
         .orderBy('timestamp', descending: false)
         .limit(limit)
         .snapshots()
-        .map((snap) =>
-        snap.docs.map((d) => DiscussionMessage.fromFirestore(d)).toList());
+        .map(
+          (snap) =>
+              snap.docs.map((d) => DiscussionMessage.fromFirestore(d)).toList(),
+        );
   }
 
-  Future<void> sendMessage(DiscussionMessage message , String id) async {
+  Future<void> sendMessage(DiscussionMessage message, String id) async {
     await _col.doc(id).set(message.toFirestoreMap());
   }
-
 
   Future<void> deleteMessage(String id) async {
     await _col.doc(id).delete();
   }
 
   Stream<DateTime?> latestMessageStream() {
-    return _col
-        .orderBy('timestamp', descending: true)
-        .limit(1)
-        .snapshots()
-        .map((snap) {
-      if (snap.docs.isEmpty) return null;
-      final data = snap.docs.first.data();
-      final ts = data['timestamp'] as Timestamp?;
-      return ts?.toDate();
-    });
+    return _col.orderBy('timestamp', descending: true).limit(1).snapshots().map(
+      (snap) {
+        if (snap.docs.isEmpty) return null;
+        final data = snap.docs.first.data();
+        final ts = data['timestamp'] as Timestamp?;
+        return ts?.toDate();
+      },
+    );
   }
 
   Future<void> deleteImageFromFirestoreAndCloudinary({
@@ -70,6 +74,4 @@ class DiscussionRepository {
       print("Error: $e");
     }
   }
-
-
 }
