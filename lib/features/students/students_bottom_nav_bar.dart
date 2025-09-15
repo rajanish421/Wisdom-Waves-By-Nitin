@@ -7,6 +7,7 @@ import 'package:wisdom_waves_by_nitin/features/students/discussion/screens/discu
 import 'package:wisdom_waves_by_nitin/features/students/homescreen/screens/students_home_screen.dart';
 
 import '../../constant/app_colors.dart';
+import '../../update_checker.dart';
 import '../../utills/local_storage.dart';
 import '../comman/screens/about_us_screen.dart';
 import 'announcement/screens/all_announcements_screen.dart';
@@ -114,21 +115,11 @@ class _StudentsBottomNavBarState extends State<StudentsBottomNavBar> {
             children:[
               IconButton(
               onPressed: () async{
-                // final totalAnnouncements =
-                //     await service.getAnnouncements().first;
-                // await LocalStorage.setLastSeen(totalAnnouncements.length);
-                //
-                // // Badge reset
-                //
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => AllAnnouncementsScreen(),
-                //   ),
-                // );
-                // setState(() {
-                //   badgeCount = 0;
-                // });
+                  // AppController().onInit();
+              //   Future.delayed(Duration.zero, () {
+              //     UpdateChecker.checkForUpdate(context);
+              //   });
+              //   Navigator.push(context, MaterialPageRoute(builder: (context) => UpdateChecker(),));
               },
               icon: const Icon(Icons.notifications, size: 32),
             ),

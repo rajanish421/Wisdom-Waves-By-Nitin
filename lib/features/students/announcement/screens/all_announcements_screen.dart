@@ -10,13 +10,7 @@ class AllAnnouncementsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("All Announcements")),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-
-        },
-        child: const Icon(Icons.add),
-      ),
+      appBar: AppBar(title: const Text("All Announcements"),centerTitle: true,),
       body: StreamBuilder<List<Announcement>>(
         stream: service.getAnnouncements(),
         builder: (context, snapshot) {
@@ -32,6 +26,7 @@ class AllAnnouncementsScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final ann = announcements[index];
               return Card(
+                color: Colors.white,
                 margin: const EdgeInsets.all(8),
                 child: ListTile(
                   title: Text(ann.title),

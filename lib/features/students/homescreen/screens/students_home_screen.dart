@@ -8,6 +8,7 @@ import 'package:wisdom_waves_by_nitin/features/students/homescreen/widgets/featu
 import 'package:wisdom_waves_by_nitin/features/students/resource/screens/resource_home_screen.dart';
 import 'package:wisdom_waves_by_nitin/features/students/test/screens/main_screen.dart';
 import 'package:badges/badges.dart' as badges;
+import '../../../../update_checker.dart';
 import '../../../../utills/local_storage.dart';
 import '../../announcement/screens/all_announcements_screen.dart';
 import '../../announcement/services/announcement_service.dart';
@@ -40,8 +41,9 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    // This is for checking app update
+
     _listenToAnnouncements();
   }
 

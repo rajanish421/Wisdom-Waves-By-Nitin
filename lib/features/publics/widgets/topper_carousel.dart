@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 class TopperCarousel extends StatelessWidget {
    TopperCarousel({super.key});
   final List<String> topperImages = [
-    'assets/images/topper.jpg',
     'assets/images/topper1.jpeg',
+    'assets/images/topper2.jpeg',
+    'assets/images/topper3.jpeg',
+    'assets/images/topper4.jpeg',
     // Add more images as needed
   ];
   @override

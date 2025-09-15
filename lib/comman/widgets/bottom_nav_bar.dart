@@ -5,6 +5,7 @@ import '../../constant/app_colors.dart';
 import '../../features/comman/screens/about_us_screen.dart';
 import '../../features/publics/screens/contact_screen.dart';
 import '../../features/publics/screens/home_screen.dart';
+import '../../update_checker.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
@@ -29,6 +30,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
       _page = index;
       _index = index;
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    UpdateChecker.checkLatestVersion(context);
   }
 
   @override
