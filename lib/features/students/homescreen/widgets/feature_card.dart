@@ -22,6 +22,7 @@ class FeatureCard extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             title,
+            overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
             style: const TextStyle(
                 fontSize: 18,

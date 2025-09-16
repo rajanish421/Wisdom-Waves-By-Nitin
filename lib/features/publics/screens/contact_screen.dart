@@ -192,10 +192,11 @@ class _ContactScreenState extends State<ContactScreen> {
                 text: "submit",
                 onPressed: () {
                   // logic for ending message
-                  if(nameController.text.trim().toString().isNotEmpty && nameController.text.trim() != null){
+                  if(nameController.text.trim().toString().isNotEmpty && messageController.text.trim().toString().isNotEmpty){
                     send();
+                  }else{
+                    ToastMessage.show(message: "Please enter name and message!");
                   }
-                  ToastMessage.show(message: "Please enter name and message!");
                 },
 
               ),

@@ -8,6 +8,17 @@ class UpdateChecker {
   static const String repositoryOwner = 'rajanish421';
   static const String repositoryName = 'Wisdom-Waves-By-Nitin';
 
+
+  static Future<String> getCurrentVersion()async{
+    try{
+      PackageInfo packageInfo =  await PackageInfo.fromPlatform();
+      String currentVersion = packageInfo.version;
+      return currentVersion;
+    }catch(err){
+      return err.toString();
+    }
+  }
+
   static Future<void> checkLatestVersion(BuildContext context) async {
     try {
       // Get installed version

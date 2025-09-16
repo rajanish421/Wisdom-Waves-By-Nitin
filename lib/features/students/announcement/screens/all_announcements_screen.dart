@@ -29,7 +29,7 @@ class AllAnnouncementsScreen extends StatelessWidget {
                 color: Colors.white,
                 margin: const EdgeInsets.all(8),
                 child: ListTile(
-                  title: Text(ann.title),
+                  title: Text(ann.title,style: TextStyle(fontSize: 19,fontWeight: FontWeight.bold),),
                   subtitle: Text(
                     ann.message,
                     maxLines: 1,

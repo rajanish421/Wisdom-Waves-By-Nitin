@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:wisdom_waves_by_nitin/features/students/resource/screens/image_preview_screen.dart';
 import 'package:wisdom_waves_by_nitin/features/students/resource/screens/pdf_view_screen.dart';
 import 'package:wisdom_waves_by_nitin/features/students/resource/screens/video_view_screen.dart';
-
 import '../../../../Model/file_model.dart';
 
 
@@ -74,7 +73,7 @@ class _ResourceScreenState extends State<ResourceScreen> {
     bool isSelected = selectedType == type;
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: isSelected ? Colors.blue : Colors.grey.shade300,
+        backgroundColor: isSelected ? Colors.blue : Colors.white,
         foregroundColor: isSelected ? Colors.white : Colors.black,
       ),
       onPressed: () => setState(() => selectedType = type),

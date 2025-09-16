@@ -62,15 +62,15 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
     );
     await _repo.sendMessage(msg,id);
     _textController.clear();
-    // _saveLastOpenedAt();
+    _saveLastOpenedAt();
     // _scrollToBottom();
     _isSending = false;
   }
-  // /// ✅ Save timestamp when chat opened
-  // Future<void> _saveLastOpenedAt() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   await prefs.setInt("lastOpenedAt", DateTime.now().millisecondsSinceEpoch);
-  // }
+  /// ✅ Save timestamp when chat opened
+  Future<void> _saveLastOpenedAt() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt("lastOpenedAt", DateTime.now().millisecondsSinceEpoch);
+  }
 
   Future<void> _sendImage() async {
     // final ImagePicker _picker = ImagePicker();
@@ -149,6 +149,9 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
     );
 
     await _repo.sendMessage(msg,id);
+    //    this is for update last message time.
+    _saveLastOpenedAt();
+
     // _scrollToBottom();
   }
 

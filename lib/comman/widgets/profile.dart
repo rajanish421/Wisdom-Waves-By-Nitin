@@ -2,9 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:wisdom_waves_by_nitin/Model/students_model.dart';
 import 'package:wisdom_waves_by_nitin/comman/widgets/fullScreen_image.dart';
 import 'package:wisdom_waves_by_nitin/comman/widgets/profile_services.dart';
+import 'package:wisdom_waves_by_nitin/update_checker.dart';
 
 import '../../features/students/auth/screens/login_screen.dart';
 
@@ -21,12 +23,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // String url = "";
   ProfileUpdate profileUpdate = ProfileUpdate();
   // late final ValueNotifier<String> profileUrl;
+  // UpdateChecker updateChecker = UpdateChecker();
+  String appVersion = "";
 
   @override
   void initState() {
     super.initState();
+    getVersion();
   }
 
+  void getVersion()async{
+     appVersion = await UpdateChecker.getCurrentVersion();
+     setState(() {
+     });
+  }
 
   void updatePic() async {
     await profileUpdate.updateProfilePic(
@@ -227,6 +237,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       MaterialPageRoute(builder: (context) => LoginScreen()),
                     );
                   },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("App Version : ${appVersion}" , style: TextStyle(fontWeight: FontWeight.bold), ),
+                  ],
                 ),
               ],
             ),

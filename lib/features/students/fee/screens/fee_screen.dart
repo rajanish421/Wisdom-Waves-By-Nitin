@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:wisdom_waves_by_nitin/Model/fee_model.dart';
+import 'package:wisdom_waves_by_nitin/constant/app_colors.dart';
 
 import '../../homescreen/services/fee_services.dart';
 
@@ -29,28 +30,28 @@ class StudentFeeDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
         title: const Text("My Fees"),
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: AppColors.appBarColor,
       ),
-      body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+      body: StreamBuilder<FeeModel?>(
         stream: _feeService.getStudentFee(userId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (!snapshot.hasData || !snapshot.data!.exists) {
+          if (!snapshot.hasData || snapshot.data == null) {
             return const Center(child: Text("No fee record found."));
           }
 
-          final feeData = snapshot.data!.data()!;
-          final totalFee = feeData['totalFee'] ?? 0;
-          final paid = feeData['paid'] ?? 0;
-          final pending = totalFee - paid;
+          final feeData = snapshot.data;
+          final totalFee = feeData!.totalPaid + feeData.totalDue;
+          final paid = feeData.totalPaid;
+          final pending = feeData.totalDue;
 
           final double percent =
               totalFee > 0 ? (paid / totalFee).clamp(0.0, 1.0) : 0.0;
@@ -73,7 +74,7 @@ class StudentFeeDashboard extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                // _buildStudentHeader(feeData),
+                // _buildStudentHeader(feeData.toMap()),
                 // const SizedBox(height: 20),
                 _buildFeeDashboard(
                   totalFee,

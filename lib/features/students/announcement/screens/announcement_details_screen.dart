@@ -29,10 +29,19 @@ class AnnouncementDetailsScreen extends StatelessWidget {
                 const SizedBox(height: 10),
                 Text(ann.message, style: const TextStyle(fontSize: 16)),
                 const SizedBox(height: 20),
-                if (ann.imageUrl != null)
-                  SizedBox(
+                if (ann.imageUrl != null && ann.imageUrl.toString().isNotEmpty)
+                  Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(color: Colors.blue,blurRadius: 2,spreadRadius: 1),
+                        BoxShadow(color: Colors.white,blurRadius: 2,spreadRadius: 1),
+                      ],
+                      borderRadius: BorderRadius.circular(10),
+                      image: DecorationImage(image: NetworkImage(ann.imageUrl!),fit: BoxFit.cover),
+                    ),
                       width: double.infinity,
-                      child: Image.network(ann.imageUrl!, height: 200, fit: BoxFit.cover,alignment: Alignment.center,)),
+                    height: 250,
+                      ),
                 const SizedBox(height: 20),
                 Text(
                   DateFormat("dd MMM yyyy\nhh:mm a").format(ann.createdAt),
