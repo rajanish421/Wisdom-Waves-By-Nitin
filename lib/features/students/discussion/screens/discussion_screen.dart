@@ -5,6 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:record/record.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wisdom_waves_by_nitin/Model/students_model.dart';
 import 'package:wisdom_waves_by_nitin/constant/app_colors.dart';
 import '../../../../Model/discussion_model.dart';
@@ -61,9 +62,15 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
     );
     await _repo.sendMessage(msg,id);
     _textController.clear();
-    _scrollToBottom();
+    // _saveLastOpenedAt();
+    // _scrollToBottom();
     _isSending = false;
   }
+  // /// ✅ Save timestamp when chat opened
+  // Future<void> _saveLastOpenedAt() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await prefs.setInt("lastOpenedAt", DateTime.now().millisecondsSinceEpoch);
+  // }
 
   Future<void> _sendImage() async {
     // final ImagePicker _picker = ImagePicker();
@@ -142,40 +149,17 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
     );
 
     await _repo.sendMessage(msg,id);
-    _scrollToBottom();
+    // _scrollToBottom();
   }
 
-  // Future<void> _toggleRecording() async {
-  //   if (_isRecording) {
-  //     final path = await _recorder.stop();
-  //     setState(() => _isRecording = false);
-  //     if (path == null) return;
-  //
-  //     final url = await _cloudinary.uploadAudio(File(path));
-  //     if (url == null) return;
-  //
-  //     final msg = DiscussionMessage(
-  //       senderId: _uid,
-  //       senderName: _name,
-  //       audioUrl: url,
-  //       timestamp: DateTime.now(),
-  //     );
-  //     await _repo.sendMessage(msg);
-  //     _scrollToBottom();
-  //   } else {
-  //     if (!await _recorder.hasPermission()) return;
-  //     await _recorder.start(const RecordConfig(), path: 'voice_${DateTime.now().millisecondsSinceEpoch}.m4a');
-  //     setState(() => _isRecording = true);
-  //   }
+
+  // void _scrollToBottom() {
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     if (_scrollController.hasClients) {
+  //       _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+  //     }
+  //   });
   // }
-
-  void _scrollToBottom() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients) {
-        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-      }
-    });
-  }
 
   @override
   void dispose() {
@@ -201,19 +185,19 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
                   if (!snap.hasData)
                     return const Center(child: CircularProgressIndicator());
                   final messages = snap.data!;
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    if (_scrollController.hasClients) {
-                      _scrollController.jumpTo(
-                        _scrollController.position.maxScrollExtent,
-                      );
-                    }
-                  });
+                  // WidgetsBinding.instance.addPostFrameCallback((_) {
+                  //   if (_scrollController.hasClients) {
+                  //     _scrollController.jumpTo(
+                  //       _scrollController.position.maxScrollExtent,
+                  //     );
+                  //   }
+                  // });
                   return ListView.builder(
                     controller: _scrollController,
                     itemCount: messages.length,
-                    // reverse: true,
+                    reverse: true,
                     itemBuilder: (_, i) {
-                      final m = messages[i];
+                      final m = messages[messages.length - 1 - i];
                       final isMe = m.senderId == widget.student.userId;
                       return InkWell(
                         onLongPress: isMe == true ? () {
@@ -242,7 +226,7 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
                                 ),
                           );
                         }:null,
-                        child: MessageTile(message: m, isMe: isMe),
+                        child: MessageTile(message: m, isMe: isMe,index: i,),
                       );
                     },
                   );

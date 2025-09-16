@@ -3,12 +3,10 @@ import 'package:wisdom_waves_by_nitin/Model/students_model.dart';
 import 'package:wisdom_waves_by_nitin/constant/app_colors.dart';
 import 'package:wisdom_waves_by_nitin/features/students/assignment/screens/assignment_home_screen.dart';
 import 'package:wisdom_waves_by_nitin/features/students/attendence/screens/attendence_home_screen.dart';
-import 'package:wisdom_waves_by_nitin/features/students/download/screens/download_home_screen.dart';
 import 'package:wisdom_waves_by_nitin/features/students/homescreen/widgets/feature_card.dart';
 import 'package:wisdom_waves_by_nitin/features/students/resource/screens/resource_home_screen.dart';
 import 'package:wisdom_waves_by_nitin/features/students/test/screens/main_screen.dart';
 import 'package:badges/badges.dart' as badges;
-import '../../../../update_checker.dart';
 import '../../../../utills/local_storage.dart';
 import '../../announcement/screens/all_announcements_screen.dart';
 import '../../announcement/services/announcement_service.dart';
@@ -24,17 +22,7 @@ class StudentHomeScreen extends StatefulWidget {
 }
 
 class _StudentHomeScreenState extends State<StudentHomeScreen> {
-  /// Feature items list
-  List<Map<String, dynamic>> get _featureItems => [
-    {'title': 'Tests', 'icon': Icons.assignment},
-    {'title': 'Fees', 'icon': Icons.attach_money},
-    {'title': 'Attendance', 'icon': Icons.check_circle},
-    {'title': 'Timetable', 'icon': Icons.calendar_month},
-    {'title': 'Assignments', 'icon': Icons.assignment_turned_in},
-    {'title': 'Downloads', 'icon': Icons.download},
-    {'title': 'Resources', 'icon': Icons.folder},
-    {'title': 'Announcements', 'icon': Icons.campaign},
-  ];
+
 
   final service = AnnouncementService();
   int badgeCount = 0;
@@ -126,16 +114,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                   title: "Assignment",
                 ),
               ),
-              // GestureDetector(
-              //   onTap: () {
-              //     Navigator.push(context, MaterialPageRoute(builder: (context) => DownloadHomeScreen(),));
-              //
-              //   },
-              //   child: FeatureCard(
-              //     icon: Icons.download,
-              //     title: "Downloads",
-              //   ),
-              // ),
+
               GestureDetector(
                 onTap: () {
                   Navigator.push(

@@ -26,7 +26,7 @@ class _ImagesScreenState extends State<ImagesScreen> {
         .collection('files')
         .where('className', isEqualTo: widget.className)
         .where('subject', isEqualTo: widget.subject)
-        .where('type', isEqualTo: 'images')
+        .where('type', isEqualTo: 'image')
         .get();
 
     return snapshot.docs

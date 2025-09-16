@@ -7,6 +7,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 
@@ -126,110 +127,113 @@ class _VideoLibraryScreenState extends State<VideoLibraryScreen> {
                         final isPlaying = _currentlyPlaying == video.name;
                         final isPaused = _currentlySelected == video.name && !isPlaying;
 
-                        return Card(
-                          color: (_currentlySelected == video.name)
-                              ? Colors.green.withOpacity(0.1)
-                              : null,
-                          child: ListTile(
-                            title: Text(video.name),
-                            subtitle: Text(video.createdAt.toString()),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                // 🎬 Play / Pause / Resume icon
-                                IconButton(
-                                  icon: Icon(
-                                    isPlaying
-                                        ? Icons.equalizer        // playing
-                                        : isPaused
-                                        ? Icons.play_arrow   // paused
-                                        : Icons.play_arrow,  // not started
-                                    color: (isDownloaded && !isDownloading)
-                                        ? Colors.green
-                                        : Colors.grey,
-                                  ),
-                                  onPressed: (isDownloaded && !isDownloading)
-                                      ? () async {
-                                    final path = await DownloadService.getLocalFilePath(video.name);
-                                    if (path != null) {
-                                      if (_currentlySelected == video.name) {
-                                        // toggle pause/resume
-                                        if (_controller!.value.isPlaying) {
-                                          await _controller?.pause();
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Card(
+                            color: (_currentlySelected == video.name)
+                                ? Colors.green.withOpacity(0.1)
+                                : Colors.white,
+                            child: ListTile(
+                              title: Text(video.name),
+                              subtitle: Text(DateFormat("yyyy/MM/dd HH:mm:ss").format(video.createdAt)),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  // 🎬 Play / Pause / Resume icon
+                                  IconButton(
+                                    icon: Icon(
+                                      isPlaying
+                                          ? Icons.equalizer        // playing
+                                          : isPaused
+                                          ? Icons.play_arrow   // paused
+                                          : Icons.play_arrow,  // not started
+                                      color: (isDownloaded && !isDownloading)
+                                          ? Colors.green
+                                          : Colors.grey,
+                                    ),
+                                    onPressed: (isDownloaded && !isDownloading)
+                                        ? () async {
+                                      final path = await DownloadService.getLocalFilePath(video.name);
+                                      if (path != null) {
+                                        if (_currentlySelected == video.name) {
+                                          // toggle pause/resume
+                                          if (_controller!.value.isPlaying) {
+                                            await _controller?.pause();
+                                          } else {
+                                            await _controller?.play();
+                                          }
+                                          setState(() {
+                                            _currentlyPlaying = _controller!.value.isPlaying
+                                                ? video.name
+                                                : null;
+                                          });
                                         } else {
-                                          await _controller?.play();
-                                        }
-                                        setState(() {
-                                          _currentlyPlaying = _controller!.value.isPlaying
-                                              ? video.name
-                                              : null;
-                                        });
-                                      } else {
-                                        // stop previous video
-                                        if (_currentlyPlaying != null) await _controller?.pause();
+                                          // stop previous video
+                                          if (_currentlyPlaying != null) await _controller?.pause();
 
-                                        _initializePlayer(path, video.name);
+                                          _initializePlayer(path, video.name);
+                                        }
                                       }
                                     }
-                                  }
-                                      : null,
-                                ),
+                                        : null,
+                                  ),
 
-                                // Download button
-                                if (!isDownloaded && !isDownloading)
-                                  IconButton(
-                                    icon: Icon(Icons.download),
-                                    onPressed: () async {
-                                      final path = await DownloadService.downloadFile(
-                                        video.url,
-                                        video.name,
-                                            (received, total) {
-                                          if (total != -1) {
-                                            setState(() {
-                                              _downloadProgress[video.name] =
-                                                  received / total;
-                                            });
-                                          }
-                                        },
-                                      );
-
-                                      if (path != null) {
-                                        setState(() {
-                                          _downloadProgress[video.name] = 0;
-                                        });
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(content: Text("Downloaded: ${video.name}")),
+                                  // Download button
+                                  if (!isDownloaded && !isDownloading)
+                                    IconButton(
+                                      icon: Icon(Icons.download),
+                                      onPressed: () async {
+                                        final path = await DownloadService.downloadFile(
+                                          video.url,
+                                          video.name,
+                                              (received, total) {
+                                            if (total != -1) {
+                                              setState(() {
+                                                _downloadProgress[video.name] =
+                                                    received / total;
+                                              });
+                                            }
+                                          },
                                         );
-                                      }
-                                    },
-                                  ),
 
-                                // Progress indicator
-                                if (isDownloading)
-                                  SizedBox(
-                                    width: 40,
-                                    height: 40,
-                                    child: CircularProgressIndicator(value: progress),
-                                  ),
-
-                                // Delete button
-                                if (isDownloaded && !isDownloading)
-                                  IconButton(
-                                    icon: Icon(Icons.delete, color: Colors.red),
-                                    onPressed: () async {
-                                      await DownloadService.deleteFile(video.name);
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text("Deleted: ${video.name}")),
-                                      );
-                                      setState(() {
-                                        if (_currentlySelected == video.name) {
-                                          _currentlySelected = null;
-                                          _currentlyPlaying = null;
+                                        if (path != null) {
+                                          setState(() {
+                                            _downloadProgress[video.name] = 0;
+                                          });
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(content: Text("Downloaded: ${video.name}")),
+                                          );
                                         }
-                                      });
-                                    },
-                                  ),
-                              ],
+                                      },
+                                    ),
+
+                                  // Progress indicator
+                                  if (isDownloading)
+                                    SizedBox(
+                                      width: 40,
+                                      height: 40,
+                                      child: CircularProgressIndicator(value: progress),
+                                    ),
+
+                                  // Delete button
+                                  if (isDownloaded && !isDownloading)
+                                    IconButton(
+                                      icon: Icon(Icons.delete, color: Colors.red),
+                                      onPressed: () async {
+                                        await DownloadService.deleteFile(video.name);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(content: Text("Deleted: ${video.name}")),
+                                        );
+                                        setState(() {
+                                          if (_currentlySelected == video.name) {
+                                            _currentlySelected = null;
+                                            _currentlyPlaying = null;
+                                          }
+                                        });
+                                      },
+                                    ),
+                                ],
+                              ),
                             ),
                           ),
                         );

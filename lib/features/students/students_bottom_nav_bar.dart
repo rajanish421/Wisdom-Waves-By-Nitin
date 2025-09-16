@@ -49,7 +49,12 @@ class _StudentsBottomNavBarState extends State<StudentsBottomNavBar> {
       if (latest != null &&
           (lastOpenedAt == null || latest.isAfter(lastOpenedAt!))) {
         setState(() {
-          hasUnread = true; // new message received
+          if(_index == 0){
+            hasUnread = false;
+          }else{
+            hasUnread = true; // new message received
+          }
+
         });
       }
     });
@@ -82,6 +87,8 @@ class _StudentsBottomNavBarState extends State<StudentsBottomNavBar> {
         hasUnread = false;
         lastOpenedAt = DateTime.now();
         _saveLastOpenedAt(); // ✅ save to local storage
+      }else{
+        _loadLastOpenedAt();
       }
     });
   }

@@ -29,6 +29,7 @@ class _PdfLibraryState extends State<PdfLibrary> {
        itemBuilder: (context, index) {
          final pdf = pdfs[index];
          return Card(
+           color: Colors.white,
            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
            child: ListTile(
              leading: const Icon(Icons.picture_as_pdf, color: Colors.red),
@@ -51,21 +52,3 @@ class _PdfLibraryState extends State<PdfLibrary> {
   }
 }
 
-/// Opens a single PDF in viewer
-// class PdfViewerScreen extends StatelessWidget {
-//   final UploadModel pdf;
-//
-//   const PdfViewerScreen({Key? key, required this.pdf}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text(pdf.name)),
-//       body: SfPdfViewer.network(
-//         "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // ✅ Directly load PDF from Cloudinary
-//         canShowScrollHead: true,
-//         canShowScrollStatus: true,
-//       ), // ✅ directly loads from Cloudinary URL
-//     );
-//   }
-// }

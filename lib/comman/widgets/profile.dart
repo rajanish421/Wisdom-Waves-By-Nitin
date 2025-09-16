@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:wisdom_waves_by_nitin/Model/students_model.dart';
 import 'package:wisdom_waves_by_nitin/comman/widgets/fullScreen_image.dart';
 import 'package:wisdom_waves_by_nitin/comman/widgets/profile_services.dart';
@@ -31,8 +32,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await profileUpdate.updateProfilePic(
       widget.student.userId,
       context,
-      "dosossycv",
-      "wisdom_waves",
+      dotenv.env['CLOUDINARY_CLOUD_NAME']??"",
+      dotenv.env['CLOUDINARY_UPLOAD_PRESET']??'',
     );
   }
 
@@ -133,7 +134,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 Text(
-                  "WW${widget.student.userId}",
+                  "Student ID - ${widget.student.userId}",
                   style: TextStyle(color: Colors.white70, fontSize: 14),
                 ),
                 const SizedBox(height: 5),
