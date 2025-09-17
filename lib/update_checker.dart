@@ -13,6 +13,7 @@ class UpdateChecker {
     try{
       PackageInfo packageInfo =  await PackageInfo.fromPlatform();
       String currentVersion = packageInfo.version;
+
       return currentVersion;
     }catch(err){
       return err.toString();
@@ -24,6 +25,7 @@ class UpdateChecker {
       // Get installed version
       PackageInfo packageInfo = await PackageInfo.fromPlatform();
       String currentVersion = packageInfo.version;
+      print("Current $currentVersion");
 
       final response = await http.get(Uri.parse(
         'https://api.github.com/repos/$repositoryOwner/$repositoryName/releases/latest',
@@ -44,7 +46,7 @@ class UpdateChecker {
           debugPrint("❌ No APK file found in release.");
           return;
         }
-
+        print("Latest $latestVersion");
         // Compare versions
         if (currentVersion != latestVersion) {
           showAnimatedUpdateDialog(context, newAppUrl);

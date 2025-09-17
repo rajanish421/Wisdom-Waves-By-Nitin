@@ -8,6 +8,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wisdom_waves_by_nitin/Model/students_model.dart';
 import 'package:wisdom_waves_by_nitin/constant/app_colors.dart';
+import 'package:wisdom_waves_by_nitin/utills/show_animated_dialoge.dart';
 import '../../../../Model/discussion_model.dart';
 import '../services/cloudinary_service.dart';
 import '../services/discussion_repository.dart';
@@ -24,10 +25,12 @@ class DiscussionScreen extends StatefulWidget {
 }
 
 class _DiscussionScreenState extends State<DiscussionScreen> {
+  // bool isSending = false;
+
   final _repo = DiscussionRepository();
   final _cloudinary = CloudinaryServiceForChatting(
-    cloudName: dotenv.env['CLOUDINARY_CLOUD_NAME']??"",
-    uploadPreset: dotenv.env['CLOUDINARY_UPLOAD_PRESET']??"",
+    cloudName: dotenv.env['CLOUDINARY_CLOUD_NAME'] ?? "",
+    uploadPreset: dotenv.env['CLOUDINARY_UPLOAD_PRESET'] ?? "",
   );
 
   final _textController = TextEditingController();
@@ -47,11 +50,13 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
     // _initUser();
   }
 
-
   Future<void> _sendText() async {
     final text = _textController.text.trim();
     if (text.isEmpty || _isSending) return;
-    _isSending = true;
+    setState(() {
+      _isSending = true;
+    });
+
     final String id = DateTime.now().microsecondsSinceEpoch.toString();
     final msg = DiscussionMessage(
       id: id,
@@ -60,12 +65,15 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
       text: text,
       timestamp: DateTime.now(),
     );
-    await _repo.sendMessage(msg,id);
+    await _repo.sendMessage(msg, id);
     _textController.clear();
     _saveLastOpenedAt();
     // _scrollToBottom();
-    _isSending = false;
+    setState(() {
+      _isSending = false;
+    });
   }
+
   /// ✅ Save timestamp when chat opened
   Future<void> _saveLastOpenedAt() async {
     final prefs = await SharedPreferences.getInstance();
@@ -136,6 +144,10 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
 
     final xfile = await _picker.pickImage(source: source, imageQuality: 80);
     if (xfile == null) return;
+    // Loading
+    setState(() {
+      _isSending = true;
+    });
 
     final url = await _cloudinary.uploadImage(File(xfile.path));
     if (url == null) return;
@@ -148,13 +160,15 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
       timestamp: DateTime.now(),
     );
 
-    await _repo.sendMessage(msg,id);
+    await _repo.sendMessage(msg, id);
     //    this is for update last message time.
+    setState(() {
+      _isSending = false;
+    });
     _saveLastOpenedAt();
 
     // _scrollToBottom();
   }
-
 
   // void _scrollToBottom() {
   //   WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -203,33 +217,28 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
                       final m = messages[messages.length - 1 - i];
                       final isMe = m.senderId == widget.student.userId;
                       return InkWell(
-                        onLongPress: isMe == true ? () {
-                          // print(m.senderId);
-                          showDialog(
-                            context: context,
-                            builder:
-                                (context) => AlertDialog(
-                                  actionsAlignment: MainAxisAlignment.spaceBetween,
-                                  alignment: Alignment.center,
-                                  title: Text("Delete"),
-                                  actions: [
-                                    TextButton(onPressed:(){
+                        onLongPress:
+                            isMe == true
+                                ? () {
+                                  // print(m.senderId);
+                                  AnimatedDialog.show(
+                                    context,
+                                    title: "Are you sure!",
+                                    message:
+                                        "Do you want to delete this message",
+                                    primaryButtonText: "Delete",
+                                    secondaryButtonText: "Cancel",
+                                    primaryButtonAction: () {
                                       if(m.imageUrl != null){
                                         _repo.deleteImageFromFirestoreAndCloudinary(docId: m.id.toString(), imageUrl: m.imageUrl.toString());
                                       }else if (m.text != null){
                                         _repo.deleteMessage(m.id.toString());
                                       }
-                                      Navigator.pop(context);
-                                    }, child: Text("delete")),
-                                    TextButton(onPressed: (){
-                                      Navigator.pop(context);
-                                    }, child: Text("cancel")),
-
-                                  ],
-                                ),
-                          );
-                        }:null,
-                        child: MessageTile(message: m, isMe: isMe,index: i,),
+                                    },
+                                  );
+                                }
+                                : null,
+                        child: MessageTile(message: m, isMe: isMe, index: i),
                       );
                     },
                   );
@@ -241,7 +250,7 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.image),
+                    icon: const Icon(Icons.image, color: AppColors.appBarColor),
                     onPressed: _sendImage,
                   ),
                   // IconButton(
@@ -268,7 +277,14 @@ class _DiscussionScreenState extends State<DiscussionScreen> {
                       ),
                     ),
                   ),
-                  IconButton(icon: const Icon(Icons.send), onPressed: _sendText),
+                  _isSending == true
+                      ? CircularProgressIndicator(
+                        constraints: BoxConstraints.tight(Size.square(25)),
+                      )
+                      : IconButton(
+                        icon: Icon(Icons.send, color: AppColors.appBarColor),
+                        onPressed: _sendText,
+                      ),
                 ],
               ),
             ),

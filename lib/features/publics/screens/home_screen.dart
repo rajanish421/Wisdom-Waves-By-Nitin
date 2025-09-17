@@ -170,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 child: Container(
                   width: double.infinity,
-                  height: 120,
+                  height: 120, //120
                   decoration: BoxDecoration(
                     color: AppColors.cardBackgroundColor,
                     border: Border.all(color: Colors.grey, width: 3),
@@ -180,26 +180,29 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.widgets, size: 80, color: Colors.blue),
-                      Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Why Wisdom Waves",
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontFamily: 'Titan',
-                                color: Colors.blue,
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Why Wisdom Waves",
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  fontFamily: 'Titan',
+                                  color: Colors.blue,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              "Tap to see all features",
-                              style: TextStyle(fontSize: 18),
-                            ),
-                          ],
+                              SizedBox(height: 5),
+                              Text(
+                                "Tap to see all features",
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],

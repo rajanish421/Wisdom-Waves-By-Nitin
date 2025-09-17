@@ -23,7 +23,7 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text("Test List")),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection("tests").snapshots(), builder: (context, snapshot) {
+        stream: FirebaseFirestore.instance.collection("tests").orderBy("createdAt", descending: true).snapshots(), builder: (context, snapshot) {
 
          if (snapshot.hasError) {
            return const Center(child: Text("Something went wrong"));

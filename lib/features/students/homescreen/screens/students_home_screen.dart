@@ -31,7 +31,6 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
   void initState() {
     super.initState();
     // This is for checking app update
-
     _listenToAnnouncements();
   }
 
@@ -132,7 +131,6 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                   final totalAnnouncements =
                       await service.getAnnouncements().first;
                   await LocalStorage.setLastSeen(totalAnnouncements.length);
-
                   // Badge reset
 
                   Navigator.push(
@@ -141,9 +139,13 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                       builder: (context) => AllAnnouncementsScreen(),
                     ),
                   );
-                  setState(() {
-                    badgeCount = 0;
-                  });
+                  Future.delayed(Duration(milliseconds: 100),() {
+                    setState(() {
+                      badgeCount = 0;
+                      _listenToAnnouncements();
+                    });
+                  },);
+
                 },
                 child: badges.Badge(
                   showBadge: badgeCount > 0,
