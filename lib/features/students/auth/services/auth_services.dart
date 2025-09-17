@@ -3,7 +3,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wisdom_waves_by_nitin/Custom_Widget/toast_message.dart';
 import 'package:wisdom_waves_by_nitin/Model/students_model.dart';
 import 'package:wisdom_waves_by_nitin/comman/widgets/show_snack_bar.dart';
 import 'package:wisdom_waves_by_nitin/utills/show_message_dialogue.dart';
@@ -19,8 +21,9 @@ class AuthServices{
 Future<void> login(String user , String password,BuildContext context)async{
   String userId = "${user}@gmail.com";
   SharedPreferences _preferences = await SharedPreferences.getInstance();
-  
+
   try{
+
     // user login
     UserCredential credential = await _firebaseAuth.signInWithEmailAndPassword(email: userId, password: password);
     // print("-----------------------------------------........... Login succees");
@@ -33,12 +36,18 @@ Future<void> login(String user , String password,BuildContext context)async{
         return;
     }
 
+    if(student.status == false){
+      showMessageDialog(context: context, title: "Login Failed", message: "You are not an active student. Please contact the institute.",isSuccess: false);
+      _firebaseAuth.signOut();
+      return;
+    }
+
     // save userId and UserName in local database -> sharedPreference
     await _preferences.setString("userId", user);
-
     // all success
     // showMessageDialog(context: context, title: "Logged in", message: "Welcome to Wisdom Waves By Nitin");
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StudentsBottomNavBar(student : student,),));
+    ToastMessage.show(message: "Welcome back! You have successfully logged in",backgroundColor: Colors.green,gravity:ToastGravity.TOP,toastLength:Toast.LENGTH_LONG );
 
   }on FirebaseAuthException catch(e){
     // Firebase Auth errors

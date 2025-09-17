@@ -26,37 +26,41 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
-
-
   final List<Map<String, String>> announcements = [
     {
       'title': 'Weekly Test Announcement',
-      'description': 'The next weekly test for all classes will be held on Saturday at 10:00 AM. Please be prepared.'
+      'description':
+          'The next weekly test for all classes will be held on Saturday at 10:00 AM. Please be prepared.',
     },
     {
       'title': 'Holiday Notice',
-      'description': 'The institute will remain closed on 15th August due to Independence Day celebrations.'
+      'description':
+          'The institute will remain closed on 15th August due to Independence Day celebrations.',
     },
     {
       'title': 'Extra Classes Scheduled',
-      'description': 'Extra classes for Class 10 Science and Math will be held on Friday evening from 4 PM to 6 PM.'
+      'description':
+          'Extra classes for Class 10 Science and Math will be held on Friday evening from 4 PM to 6 PM.',
     },
     {
       'title': 'Result Declaration',
-      'description': 'Unit Test results will be declared on Monday. You can collect your mark sheets from the office.'
+      'description':
+          'Unit Test results will be declared on Monday. You can collect your mark sheets from the office.',
     },
     {
       'title': 'Parent-Teacher Meeting',
-      'description': 'PTM is scheduled for Sunday, 10:00 AM to 1:00 PM. Parents are requested to attend without fail.'
+      'description':
+          'PTM is scheduled for Sunday, 10:00 AM to 1:00 PM. Parents are requested to attend without fail.',
     },
     {
       'title': 'New Course Launch: Class 11 & 12',
-      'description': 'We are excited to announce new batches for Class 11 & 12 (Science Stream) starting next month.'
+      'description':
+          'We are excited to announce new batches for Class 11 & 12 (Science Stream) starting next month.',
     },
     {
       'title': 'Fee Submission Reminder',
-      'description': 'Kindly submit the tuition fee for the current month before the 10th to avoid late charges.'
+      'description':
+          'Kindly submit the tuition fee for the current month before the 10th to avoid late charges.',
     },
   ];
 
@@ -80,27 +84,88 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(height: 10),
               CustomButton(
                 text: "Login as a Student -> ",
-                onPressed: () async
-                {
+                onPressed: () async {
                   bool isLoggedIn = FirebaseAuth.instance.currentUser != null;
-                  if(isLoggedIn){
+
+                  if (isLoggedIn) {
                     String uid = FirebaseAuth.instance.currentUser!.uid;
-                    final student = await FirebaseFirestore.instance.collection("students").where('uid',isEqualTo: uid).limit(1).get();
-                     Navigator.push(context, MaterialPageRoute(builder: (context) => StudentsBottomNavBar(student: Students.fromMap(student.docs.first.data()),),));
-                  }else{
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
+
+                    final studentSnap = await FirebaseFirestore.instance
+                        .collection("students")
+                        .where('uid', isEqualTo: uid)
+                        .limit(1)
+                        .get();
+
+                    if (studentSnap.docs.isNotEmpty) {
+                      final studentData = studentSnap.docs.first.data();
+                      final student = Students.fromMap(studentData);
+
+                      if (student.status == true) {
+                        // ✅ Active user -> Home
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => StudentsBottomNavBar(student: student),
+                          ),
+                        );
+                      } else {
+                        // ❌ Inactive -> Back to login
+                        FirebaseAuth.instance.signOut();
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginScreen()),
+                        );
+                      }
+                    } else {
+                      // ❌ No record found
+                      FirebaseAuth.instance.signOut();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                      );
+                    }
+                  } else {
+                    // Not logged in
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                    );
                   }
+                  // bool isLoggedIn = FirebaseAuth.instance.currentUser != null;
+                  // if (isLoggedIn) {
+                  //   String uid = FirebaseAuth.instance.currentUser!.uid;
+                  //   final student =
+                  //       await FirebaseFirestore.instance
+                  //           .collection("students")
+                  //           .where('uid', isEqualTo: uid)
+                  //           .limit(1)
+                  //           .get();
+                  //   Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder:
+                  //           (context) => StudentsBottomNavBar(
+                  //             student: Students.fromMap(
+                  //               student.docs.first.data(),
+                  //             ),
+                  //           ),
+                  //     ),
+                  //   );
+                  // } else {
+                  //   Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(builder: (context) => LoginScreen()),
+                  //   );
+                  // }
                 },
                 fontSize: 22,
               ),
               SizedBox(height: 10),
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => FeatureScreen(),
-                    ),
+                    MaterialPageRoute(builder: (context) => FeatureScreen()),
                   );
                 },
                 child: Container(
@@ -156,9 +221,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   Spacer(),
                   GestureDetector(
-                      onTap: (){
-                      },
-                      child: Text("See all",style: TextStyle(color: Colors.red),)),
+                    onTap: () {},
+                    child: Text("See all", style: TextStyle(color: Colors.red)),
+                  ),
                 ],
               ),
               CoursesCard(),
@@ -168,21 +233,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 "Up Coming Courses",
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
-              CoursesCard(upComing: true,),
+              CoursesCard(upComing: true),
               Text(
                 "Announcements",
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height:200,child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: announcements.map((e) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: AnnouncementCart(subTitle: e['description'] as String, title: e['title'] as String),
-                  );
-                },).toList(),
-              )),
-
+              SizedBox(
+                height: 200,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children:
+                      announcements.map((e) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: AnnouncementCart(
+                            subTitle: e['description'] as String,
+                            title: e['title'] as String,
+                          ),
+                        );
+                      }).toList(),
+                ),
+              ),
             ],
           ),
         ),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class Students {
   // Fields
   final String userId;
+  final bool status;
   final String uid;     // for user edit/delete from firebase Auth
   final String name;
   final String gender;
@@ -23,6 +24,7 @@ class Students {
 
   // Constructor
   Students({
+    this.status = true,
     required this.userId,
     required this.uid,
     required this.name,
@@ -45,6 +47,7 @@ class Students {
   // Convert Students to Map
   Map<String, dynamic> toMap() {
     return {
+      'status':status,
       'userId': userId,
       'uid' : uid,
       'name': name,
@@ -68,6 +71,7 @@ class Students {
   // From Map to Students
   factory Students.fromMap(Map<String, dynamic> map) {
     return Students(
+      status: map['status']??true,
       userId: map['userId'] ?? '',
       uid: map['uid']??'',
       name: map['name'] ?? '',
@@ -97,6 +101,7 @@ class Students {
 
   // CopyWith for immutability
   Students copyWith({
+    bool? status,
     String? userId,
     String? uid,
     String? name,
@@ -116,6 +121,7 @@ class Students {
     dynamic? createdAt,
   }) {
     return Students(
+      status: status??this.status,
       userId: userId ?? this.userId,
       name: name ?? this.name,
       gender: gender ?? this.gender,
