@@ -12,6 +12,7 @@ class FeeModel {
   final int batchFee;   // Monthly fee amount
   final int totalPaid;  // Total amount paid
   final int totalDue;   // Total amount still due
+  final bool userStatus;
 
   FeeModel({
     required this.feeId,
@@ -22,6 +23,7 @@ class FeeModel {
     required this.batchFee,
     required this.totalPaid,
     required this.totalDue,
+    this.userStatus = true,
   });
 
   /// Convert object -> Firestore
@@ -35,6 +37,7 @@ class FeeModel {
       "batchFee": batchFee,
       "totalPaid": totalPaid,
       "totalDue": totalDue,
+      "userStatus":userStatus,
     };
   }
 
@@ -49,6 +52,7 @@ class FeeModel {
       batchFee: map["batchFee"] ?? 0,
       totalPaid: map["totalPaid"] ?? 0,
       totalDue: map["totalDue"] ?? 0,
+      userStatus: map["userStatus"]??true,
     );
   }
 }
