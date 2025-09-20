@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:wisdom_waves_by_nitin/Model/fee_model.dart';
-
 class StudentFeeService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 

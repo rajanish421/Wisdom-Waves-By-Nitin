@@ -1,16 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:wisdom_waves_by_nitin/Model/fee_model.dart';
 import 'package:wisdom_waves_by_nitin/constant/app_colors.dart';
+import 'package:wisdom_waves_by_nitin/features/students/fee/services/fee_services.dart';
 
 import '../../homescreen/services/fee_services.dart';
 
-class StudentFeeDashboard extends StatelessWidget {
+class StudentFeeDashboard extends StatefulWidget {
   final String userId;
-  final StudentFeeService _feeService = StudentFeeService();
 
   StudentFeeDashboard({super.key, required this.userId});
+
+  @override
+  State<StudentFeeDashboard> createState() => _StudentFeeDashboardState();
+}
+
+class _StudentFeeDashboardState extends State<StudentFeeDashboard> {
+  final StudentFeeService _feeService = StudentFeeService();
+  FeeServices services = FeeServices();
+  //
+  // initState((){
+  //
+  // })
+  //
+  int totalFee = 0;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getTotalFeeTillCurrentMonth();
+  }
+
+  Future<void> getTotalFeeTillCurrentMonth()async{
+    final now = DateTime.now();
+    final currentYear = now.year;
+    final currentMonth = now.month;
+    final currentMonthId =
+        "${currentYear.toString().padLeft(4, '0')}-${currentMonth.toString().padLeft(2, '0')}";
+
+
+
+   final res = await services.getCurrentMonthFee(currentMonthId, widget.userId);
+   setState(() {
+     totalFee = res.feeTillThisMonths;
+   });
+  }
+
+
 
   Map<int, String> monthList = {
     1: "January",
@@ -38,7 +76,7 @@ class StudentFeeDashboard extends StatelessWidget {
         backgroundColor: AppColors.appBarColor,
       ),
       body: StreamBuilder<FeeModel?>(
-        stream: _feeService.getStudentFee(userId),
+        stream: _feeService.getStudentFee(widget.userId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -49,9 +87,10 @@ class StudentFeeDashboard extends StatelessWidget {
           }
 
           final feeData = snapshot.data;
-          final totalFee = feeData!.totalPaid + feeData.totalDue;
-          final paid = feeData.totalPaid;
-          final pending = feeData.totalDue;
+          // final totalFee = feeData!.totalPaid + feeData.totalDue;
+          final paid = feeData!.totalPaid ??0;
+          // final pending = feeData.totalDue;
+          final pending = (totalFee - paid)>0 ? totalFee - paid:0;
 
           final double percent =
               totalFee > 0 ? (paid / totalFee).clamp(0.0, 1.0) : 0.0;
@@ -89,7 +128,7 @@ class StudentFeeDashboard extends StatelessWidget {
                     stream:
                         FirebaseFirestore.instance
                             .collection("fee")
-                            .doc(userId)
+                            .doc(widget.userId)
                             .collection("months")
                             .where("status", isEqualTo: "paid")
                             .snapshots(),
@@ -105,15 +144,15 @@ class StudentFeeDashboard extends StatelessWidget {
                         itemCount: snapData.length,
                         itemBuilder: (context, index) {
                           final data = FeeMonth.fromMap(snapData[index].data());
-                          print(data.year);
                           String monthName =
                               "${monthList[data.month]} - ${data.year}"
                                   .toString();
                           return Card(
                             color: Colors.white,
                             child: ListTile(
-                              title: Text(monthName),
+                              title: Text(monthName,style: TextStyle(fontWeight: FontWeight.bold),),
                               trailing: Icon(Icons.check_circle,color: Colors.green,),
+                              subtitle: Text("Current Due : ${data.currDue}\nPaid Amount : ${data.amountPaid} \n${DateFormat("EEE, dd MMM yyyy").format(data.createdAt!.toDate())}"),
                             ),
                           );
                         },

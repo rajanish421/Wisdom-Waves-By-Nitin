@@ -7,6 +7,12 @@ class FeeServices {
   // create firestore instance
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+
+  Future<FeeMonth> getCurrentMonthFee(String monthId,String userId)async{
+    DocumentSnapshot<Map<String, dynamic>>  res = await firestore.collection("fee").doc(userId).collection("months").doc(monthId).get();
+      return FeeMonth.fromMap(res.data()!);
+  }
+
   // get fee data using userId
 
 Future<FeeModel?> getFee(String userId)async{
